@@ -3,66 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Hub | Новости и Гайды</title>
+    <title>MINE-BASE | База знаний Minecraft</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <div class="logo">MC-HUB</div>
+        <div class="logo">MINE-BASE</div>
         <nav>
             <a href="index.html">Главная</a>
-            <a href="#">Новости</a>
-            <a href="#">Команды</a>
+            <a href="#">База знаний</a>
             <a href="panel.html" class="btn-panel">Игровая Панель 📺</a>
         </nav>
     </header>
 
     <section class="search-section">
-        <h1>Что ищем сегодня, Артем?</h1>
-        <input type="text" class="search-box" placeholder="Найти команду, мод или гайд...">
+        <h1>Поиск по MINE-BASE</h1>
+        <input type="text" id="searchInput" class="search-box" placeholder="Найти команду, крафт или новость...">
     </section>
 
     <main class="main-container">
-        
-        <section class="content">
+        <section id="news-container">
             <h2>Последние обновления</h2>
-
-            <article class="news-card">
-                <img src="https://img.youtube.com/vi/jSOfnZ-P3E4/maxresdefault.jpg" alt="News 1">
-                <div class="news-content">
-                    <h2>Майнкрафт 1.21: Что нового?</h2>
-                    <p>Разбираем все изменения в новом обновлении: автоматический крафт, новые мобы и данжи...</p>
-                    <a href="#" style="color: #ff9800;">Читать далее →</a>
-                </div>
-            </article>
-
-            <article class="news-card">
-                <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/TrickyTrials_Standard_Vertical.jpg" alt="News 2">
-                <div class="news-content">
-                    <h2>Топ 5 модов на оптимизацию</h2>
-                    <p>Твой ПК лагает? Эти моды поднимут FPS даже на старом калькуляторе. Проверено лично!</p>
-                    <a href="#" style="color: #ff9800;">Читать далее →</a>
-                </div>
-            </article>
-        </section>
+            </section>
 
         <aside>
-            <div style="background: #1e1e1e; padding: 20px; border-radius: 10px; border: 1px solid #333;">
-                <h3>Популярные команды</h3>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: 10px;"><code>/gamemode creative</code></li>
-                    <li style="margin-bottom: 10px;"><code>/tp @s ~ ~ ~</code></li>
-                    <li style="margin-bottom: 10px;"><code>/give @p diamond_block</code></li>
-                </ul>
+            <div style="background: var(--card-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
+                <h3>Быстрые ссылки</h3>
+                <p>Здесь будут важные инструменты для игроков.</p>
             </div>
         </aside>
-
     </main>
 
-    <footer>
-        <p>&copy; 2026 Minecraft Hub. Проект Артема для всех майнкрафтеров.</p>
-    </footer>
+    <script src="news-data.js"></script>
+    <script>
+        // Функция для вывода новостей на экран
+        function displayNews() {
+            const container = document.getElementById('news-container');
+            
+            // Проходимся по каждой новости из нашего списка
+            newsList.forEach(item => {
+                const article = document.createElement('article');
+                article.className = 'news-card';
+                article.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="news-content">
+                        <h2>${item.title}</h2>
+                        <p>${item.description}</p>
+                        <small>${item.date}</small>
+                    </div>
+                `;
+                container.appendChild(article);
+            });
+        }
 
+        // Запускаем вывод при загрузке страницы
+        window.onload = displayNews;
+    </script>
 </body>
 </html>
