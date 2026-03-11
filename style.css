@@ -1,0 +1,92 @@
+/* Общие настройки */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* Шапка (Навигация) */
+header {
+    background-color: #1b5e20;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.logo { font-size: 1.5rem; font-weight: bold; color: #fff; }
+
+nav a {
+    margin-left: 20px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+nav a:hover { color: #81c784; }
+
+/* Кнопка "Панель для 2-го монитора" */
+.btn-panel {
+    background-color: #ff9800;
+    padding: 8px 15px;
+    border-radius: 5px;
+    color: #000 !important;
+    font-weight: bold;
+}
+
+/* Секция Поиска */
+.search-section {
+    padding: 60px 20px;
+    text-align: center;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1623934199716-dc3100360473?auto=format&fit=crop&q=80&w=1000');
+    background-size: cover;
+    background-position: center;
+}
+
+.search-box {
+    margin-top: 20px;
+    padding: 15px;
+    width: 60%;
+    max-width: 500px;
+    border-radius: 30px;
+    border: none;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+/* Контентная часть */
+.main-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2 части контент, 1 часть боковая панель */
+    gap: 30px;
+}
+
+.news-card {
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    border: 1px solid #333;
+}
+
+.news-card img { width: 100%; height: 200px; object-fit: cover; }
+.news-content { padding: 20px; }
+.news-content h2 { margin: 0 0 10px 0; color: #4caf50; }
+
+/* Футер */
+footer {
+    text-align: center;
+    padding: 40px;
+    background: #0a0a0a;
+    color: #555;
+}
