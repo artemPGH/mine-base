@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Второй Монитор</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Специфические стили для панели */
+        body { background: #000; overflow: hidden; }
+        .grid-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 100vh;
+            gap: 10px;
+            padding: 10px;
+        }
+        .col {
+            background: #111;
+            border: 2px solid #222;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        h2 { color: #ff9800; text-align: center; font-size: 1.8rem; }
+        .big-btn {
+            display: block;
+            background: #222;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            border-left: 5px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-panel">
+        <div class="col">
+            <h2>Команды</h2>
+            <div class="big-btn">/locate structure</div>
+            <div class="big-btn">/time set day</div>
+            <div class="big-btn">/weather clear</div>
+            <div class="big-btn">/gamerule keepInventory true</div>
+        </div>
+
+        <div class="col">
+            <h2>Твои задачи</h2>
+            <div style="color: #888;">Нажми, чтобы дописать...</div>
+            <textarea style="width: 100%; height: 80%; background: transparent; color: white; border: none; font-size: 1.5rem; outline: none; resize: none;" placeholder="Например: добыть 64 алмаза"></textarea>
+        </div>
+
+        <div class="col">
+            <h2>Быстрые ссылки</h2>
+            <a href="index.html" class="big-btn" style="border-left-color: #2196f3;">Вернуться на сайт</a>
+            <div class="big-btn" style="border-left-color: #f44336;">Wiki Майнкрафта</div>
+            <div class="big-btn" style="border-left-color: #9c27b0;">Калькулятор портала</div>
+        </div>
+    </div>
+
+</body>
+</html>
