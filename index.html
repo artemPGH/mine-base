@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINE-BASE | База знаний Minecraft</title>
+    <title>MINE-BASE | База знаний</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,47 +18,83 @@
     </header>
 
     <section class="search-section">
-        <h1>Поиск по MINE-BASE</h1>
-        <input type="text" id="searchInput" class="search-box" placeholder="Найти команду, крафт или новость...">
+        <h1 style="margin: 0; font-size: 2.5rem;">Весеннее обновление MINE-BASE 🌸</h1>
+        <p style="color: #ddd; font-size: 1.2rem;">Ищи моды, команды, гайды и новости</p>
+        <input type="text" id="searchInput" class="search-box" placeholder="Начни вводить (например: 1.21 или моды)...">
     </section>
 
     <main class="main-container">
-        <section id="news-container">
-            <h2>Последние обновления</h2>
-            </section>
+        
+        <section>
+            <h2 style="color: var(--text-main); border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-top: 0;">База данных</h2>
+            
+            <div id="news-container"></div>
+            
+            <p id="no-results" style="display: none; color: var(--text-muted); text-align: center; font-size: 1.2rem; margin-top: 40px;">
+                Ничего не найдено 😢<br>Попробуй изменить запрос.
+            </p>
+        </section>
 
         <aside>
-            <div style="background: var(--card-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                <h3>Быстрые ссылки</h3>
-                <p>Здесь будут важные инструменты для игроков.</p>
+            <div style="background: var(--card-bg); padding: 20px; border-radius: var(--radius); border: 2px solid var(--border); box-shadow: 4px 4px 0 rgba(0,0,0,0.1);">
+                <h3 style="margin-top:0; color: var(--accent);">Полезные блоки</h3>
+                <p style="color: var(--text-muted);">Здесь скоро появятся калькуляторы порталов, крафты и генератор зелий!</p>
             </div>
         </aside>
+
     </main>
 
     <script src="news-data.js"></script>
+    
     <script>
-        // Функция для вывода новостей на экран
-        function displayNews() {
-            const container = document.getElementById('news-container');
+        const container = document.getElementById('news-container');
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('no-results');
+
+        // Функция: рисует карточки на экране
+        function displayNews(newsArray) {
+            container.innerHTML = ''; // Очищаем старые записи
             
-            // Проходимся по каждой новости из нашего списка
-            newsList.forEach(item => {
-                const article = document.createElement('article');
-                article.className = 'news-card';
-                article.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}">
-                    <div class="news-content">
-                        <h2>${item.title}</h2>
-                        <p>${item.description}</p>
-                        <small>${item.date}</small>
-                    </div>
-                `;
-                container.appendChild(article);
-            });
+            if (newsArray.length === 0) {
+                noResults.style.display = 'block'; // Показываем "Ничего не найдено"
+            } else {
+                noResults.style.display = 'none'; // Прячем сообщение
+                
+                newsArray.forEach(item => {
+                    const article = document.createElement('article');
+                    article.className = 'news-card';
+                    article.innerHTML = `
+                        <img src="${item.image}" alt="${item.title}">
+                        <div class="news-content">
+                            <h2>${item.title}</h2>
+                            <p>${item.description}</p>
+                            <small>📅 ${item.date}</small>
+                        </div>
+                    `;
+                    container.appendChild(article);
+                });
+            }
         }
 
-        // Запускаем вывод при загрузке страницы
-        window.onload = displayNews;
+        // Запуск: показываем всё при загрузке страницы
+        window.onload = () => {
+            displayNews(newsList);
+        };
+
+        // Логика поиска: реагирует на каждый введенный символ
+        searchInput.addEventListener('input', (event) => {
+            const searchText = event.target.value.toLowerCase(); // Переводим текст в нижний регистр
+            
+            // Фильтруем массив: ищем совпадения в заголовке ИЛИ описании
+            const filteredNews = newsList.filter(item => {
+                const titleMatch = item.title.toLowerCase().includes(searchText);
+                const descMatch = item.description.toLowerCase().includes(searchText);
+                return titleMatch || descMatch;
+            });
+            
+            // Рисуем только то, что нашли
+            displayNews(filteredNews);
+        });
     </script>
 </body>
 </html>
