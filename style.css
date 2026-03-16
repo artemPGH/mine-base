@@ -1,20 +1,18 @@
-/* Умные переменные: Весенние цвета и майнкрафт-стиль */
 :root {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
     --text-main: #e0e0e0;
     --text-muted: #aaaaaa;
-    --accent: #55ff55; /* Яркий весенне-зеленый (как листва в игре) */
+    --accent: #55ff55;
     --header-bg: #1b5e20;
-    --panel-btn: #ffaa00; /* Цвет золотого яблока */
+    --panel-btn: #ffaa00;
     --border: #333333;
-    --radius: 4px; /* Квадратный стиль блоков вместо круглого */
+    --radius: 4px;
 }
 
-/* Светлая тема (автоматическая) */
 @media (prefers-color-scheme: light) {
     :root {
-        --bg-color: #f4f5f0; /* Легкий оттенок березовой доски */
+        --bg-color: #f4f5f0;
         --card-bg: #ffffff;
         --text-main: #212121;
         --text-muted: #666666;
@@ -26,16 +24,13 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
     margin: 0;
-    transition: background-color 0.3s, color 0.3s;
+    transition: 0.3s;
 }
 
-a { text-decoration: none; color: inherit; }
-
-/* Шапка сайта */
 header {
     background-color: var(--header-bg);
     padding: 15px 5%;
@@ -45,48 +40,47 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    border-bottom: 4px solid var(--accent); /* Линия как блок травы */
+    border-bottom: 4px solid var(--accent);
 }
 
-.logo { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: 1px; }
+.logo { font-size: 1.8rem; font-weight: 900; color: #fff; }
 
-nav a { margin-left: 20px; font-weight: 600; color: #fff; text-transform: uppercase; font-size: 0.9rem;}
-nav a:hover { color: var(--accent); }
+nav a { margin-left: 20px; font-weight: 600; color: #fff; text-transform: uppercase; }
 
-/* Кнопка панели */
 .btn-panel {
     background-color: var(--panel-btn);
     padding: 10px 18px;
     border-radius: var(--radius);
     color: #fff !important;
-    border-bottom: 3px solid rgba(0,0,0,0.3); /* Эффект 3D-кнопки */
-    transition: 0.1s;
 }
-.btn-panel:active { transform: translateY(3px); border-bottom: 0; }
 
-/* Секция поиска с пейзажем */
+/* Секция поиска с темной подложкой */
 .search-section {
-    padding: 80px 20px;
+    padding: 100px 20px;
     text-align: center;
-    /* Красивый пейзаж */
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1605639744655-bce6a4f2101e?q=80&w=1920') center/cover;
-    color: white;
+    background: url('https://images.unsplash.com/photo-1605639744655-bce6a4f2101e?q=80&w=1920') center/cover;
     border-bottom: 4px solid var(--border);
 }
 
+.hero-overlay {
+    background: rgba(0, 0, 0, 0.7); /* Черный прямоугольник с прозрачностью */
+    display: inline-block;
+    padding: 30px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px); /* Размытие заднего фона */
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
 .search-box {
-    margin-top: 20px;
+    margin-top: 25px;
     padding: 15px 20px;
-    width: 80%;
+    width: 90%;
     max-width: 600px;
     border-radius: var(--radius);
     border: 2px solid var(--accent);
-    font-size: 1.1rem;
     background: var(--card-bg);
     color: var(--text-main);
     outline: none;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .main-container {
@@ -94,36 +88,46 @@ nav a:hover { color: var(--accent); }
     margin: 40px auto;
     padding: 0 20px;
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2.5fr 1fr;
     gap: 30px;
 }
 
-/* Карточки новостей (как блоки) */
 .news-card {
     background: var(--card-bg);
     border-radius: var(--radius);
     overflow: hidden;
     margin-bottom: 25px;
     border: 2px solid var(--border);
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.1); /* Легкая тень для объема */
-    transition: transform 0.2s;
+    transition: 0.2s;
 }
 
-.news-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent);
-}
-
-.news-card img { width: 100%; height: 250px; object-fit: cover; border-bottom: 2px solid var(--border); }
+.news-card:hover { transform: scale(1.01); border-color: var(--accent); }
+.news-card img { width: 100%; height: 280px; object-fit: cover; }
 .news-content { padding: 20px; }
-.news-content h2 { margin: 0 0 10px 0; color: var(--accent); }
-.news-content p { color: var(--text-muted); line-height: 1.6; }
-.news-content small { color: #888; font-weight: bold; }
 
-/* Мобильная адаптация */
+/* Полезные блоки в сайдбаре */
+.sidebar-block {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    margin-bottom: 20px;
+}
+
+.tool-btn {
+    display: block;
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+    border-radius: 4px;
+    font-weight: bold;
+    border-bottom: 3px solid #000;
+}
+
+.tool-btn:hover { background: var(--accent); color: #000; }
+
 @media (max-width: 768px) {
     .main-container { grid-template-columns: 1fr; }
-    header { flex-direction: column; gap: 15px; }
-    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    nav a { margin: 0; }
 }
