@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINE-BASE | База знаний</title>
+    <title>MINE-BASE | База Знаний</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,88 +12,64 @@
         <div class="logo">MINE-BASE</div>
         <nav>
             <a href="index.html">Главная</a>
-            <a href="#">База знаний</a>
             <a href="panel.html" class="btn-panel">Игровая Панель 📺</a>
         </nav>
     </header>
 
     <section class="search-section">
-        <h1 style="margin: 0; font-size: 2.5rem;">Весеннее обновление MINE-BASE 🌸</h1>
-        <p style="color: #ddd; font-size: 1.2rem;">Ищи моды, команды, гайды и новости</p>
-        <input type="text" id="searchInput" class="search-box" placeholder="Начни вводить (например: 1.21 или моды)...">
+        <div class="hero-overlay">
+            <h1 style="margin: 0; color: #fff; font-size: 2.5rem;">Весеннее обновление MINE-BASE 🌸</h1>
+            <p style="color: #55ff55; font-size: 1.2rem; margin: 10px 0 0 0;">Ищи моды, команды, гайды и новости</p>
+            <input type="text" id="searchInput" class="search-box" placeholder="Введите название мода или версию...">
+        </div>
     </section>
 
     <main class="main-container">
-        
-        <section>
-            <h2 style="color: var(--text-main); border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-top: 0;">База данных</h2>
-            
-            <div id="news-container"></div>
-            
-            <p id="no-results" style="display: none; color: var(--text-muted); text-align: center; font-size: 1.2rem; margin-top: 40px;">
-                Ничего не найдено 😢<br>Попробуй изменить запрос.
-            </p>
-        </section>
+        <section id="news-container"></section>
 
         <aside>
-            <div style="background: var(--card-bg); padding: 20px; border-radius: var(--radius); border: 2px solid var(--border); box-shadow: 4px 4px 0 rgba(0,0,0,0.1);">
-                <h3 style="margin-top:0; color: var(--accent);">Полезные блоки</h3>
-                <p style="color: var(--text-muted);">Здесь скоро появятся калькуляторы порталов, крафты и генератор зелий!</p>
+            <div class="sidebar-block">
+                <h3 style="color: var(--accent); margin-top:0;">🛠 Полезные инструменты</h3>
+                <a href="#" class="tool-btn">Генератор команд /give</a>
+                <a href="#" class="tool-btn">Калькулятор портала</a>
+                <a href="#" class="tool-btn">Таблица зачарований</a>
+            </div>
+            
+            <div class="sidebar-block">
+                <h3 style="color: var(--accent); margin-top:0;">📊 Статус серверов</h3>
+                <p style="font-size: 0.9rem;">Hypixel: <span style="color: #55ff55;">Online</span></p>
+                <p style="font-size: 0.9rem;">Mineplex: <span style="color: #ff5555;">Offline</span></p>
             </div>
         </aside>
-
     </main>
 
     <script src="news-data.js"></script>
-    
     <script>
         const container = document.getElementById('news-container');
         const searchInput = document.getElementById('searchInput');
-        const noResults = document.getElementById('no-results');
 
-        // Функция: рисует карточки на экране
-        function displayNews(newsArray) {
-            container.innerHTML = ''; // Очищаем старые записи
-            
-            if (newsArray.length === 0) {
-                noResults.style.display = 'block'; // Показываем "Ничего не найдено"
-            } else {
-                noResults.style.display = 'none'; // Прячем сообщение
-                
-                newsArray.forEach(item => {
-                    const article = document.createElement('article');
-                    article.className = 'news-card';
-                    article.innerHTML = `
-                        <img src="${item.image}" alt="${item.title}">
+        function displayNews(data) {
+            container.innerHTML = '';
+            data.forEach(item => {
+                container.innerHTML += `
+                    <article class="news-card">
+                        <img src="${item.image}" alt="img">
                         <div class="news-content">
-                            <h2>${item.title}</h2>
+                            <h2 style="color: var(--accent); margin:0;">${item.title}</h2>
                             <p>${item.description}</p>
-                            <small>📅 ${item.date}</small>
+                            <small>📅 ${item.date} | 🏷️ ${item.category}</small>
                         </div>
-                    `;
-                    container.appendChild(article);
-                });
-            }
+                    </article>
+                `;
+            });
         }
 
-        // Запуск: показываем всё при загрузке страницы
-        window.onload = () => {
-            displayNews(newsList);
-        };
+        window.onload = () => displayNews(newsList);
 
-        // Логика поиска: реагирует на каждый введенный символ
-        searchInput.addEventListener('input', (event) => {
-            const searchText = event.target.value.toLowerCase(); // Переводим текст в нижний регистр
-            
-            // Фильтруем массив: ищем совпадения в заголовке ИЛИ описании
-            const filteredNews = newsList.filter(item => {
-                const titleMatch = item.title.toLowerCase().includes(searchText);
-                const descMatch = item.description.toLowerCase().includes(searchText);
-                return titleMatch || descMatch;
-            });
-            
-            // Рисуем только то, что нашли
-            displayNews(filteredNews);
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = newsList.filter(n => n.title.toLowerCase().includes(val) || n.description.toLowerCase().includes(val));
+            displayNews(filtered);
         });
     </script>
 </body>
