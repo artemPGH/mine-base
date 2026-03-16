@@ -1,39 +1,41 @@
-/* Переменные для темной темы (по умолчанию) */
+/* Умные переменные: Весенние цвета и майнкрафт-стиль */
 :root {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
     --text-main: #e0e0e0;
     --text-muted: #aaaaaa;
-    --accent: #4caf50;
+    --accent: #55ff55; /* Яркий весенне-зеленый (как листва в игре) */
     --header-bg: #1b5e20;
-    --panel-btn: #ff9800;
-    --border: #333;
+    --panel-btn: #ffaa00; /* Цвет золотого яблока */
+    --border: #333333;
+    --radius: 4px; /* Квадратный стиль блоков вместо круглого */
 }
 
-/* Переменные для светлой темы (включаются автоматически) */
+/* Светлая тема (автоматическая) */
 @media (prefers-color-scheme: light) {
     :root {
-        --bg-color: #f5f5f5;
+        --bg-color: #f4f5f0; /* Легкий оттенок березовой доски */
         --card-bg: #ffffff;
         --text-main: #212121;
         --text-muted: #666666;
-        --accent: #2e7d32;
+        --accent: #43a047;
         --header-bg: #4caf50;
-        --panel-btn: #ef6c00;
-        --border: #ddd;
+        --panel-btn: #f57c00;
+        --border: #cccccc;
     }
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
     margin: 0;
-    transition: 0.3s; /* Чтобы тема менялась плавно */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 a { text-decoration: none; color: inherit; }
 
+/* Шапка сайта */
 header {
     background-color: var(--header-bg);
     padding: 15px 5%;
@@ -43,38 +45,48 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    border-bottom: 4px solid var(--accent); /* Линия как блок травы */
 }
 
-.logo { font-size: 1.5rem; font-weight: bold; color: #fff; }
+.logo { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: 1px; }
 
-nav a { margin-left: 20px; font-weight: 500; color: #fff; }
-nav a:hover { opacity: 0.8; }
+nav a { margin-left: 20px; font-weight: 600; color: #fff; text-transform: uppercase; font-size: 0.9rem;}
+nav a:hover { color: var(--accent); }
 
+/* Кнопка панели */
 .btn-panel {
     background-color: var(--panel-btn);
-    padding: 8px 15px;
-    border-radius: 5px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
     color: #fff !important;
+    border-bottom: 3px solid rgba(0,0,0,0.3); /* Эффект 3D-кнопки */
+    transition: 0.1s;
 }
+.btn-panel:active { transform: translateY(3px); border-bottom: 0; }
 
+/* Секция поиска с пейзажем */
 .search-section {
-    padding: 60px 20px;
+    padding: 80px 20px;
     text-align: center;
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1623934199716-dc3100360473?q=80&w=1000');
-    background-size: cover;
-    background-position: center;
+    /* Красивый пейзаж */
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1605639744655-bce6a4f2101e?q=80&w=1920') center/cover;
     color: white;
+    border-bottom: 4px solid var(--border);
 }
 
 .search-box {
     margin-top: 20px;
-    padding: 15px;
+    padding: 15px 20px;
     width: 80%;
-    max-width: 500px;
-    border-radius: 30px;
-    border: none;
+    max-width: 600px;
+    border-radius: var(--radius);
+    border: 2px solid var(--accent);
     font-size: 1.1rem;
+    background: var(--card-bg);
+    color: var(--text-main);
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .main-container {
@@ -86,21 +98,32 @@ nav a:hover { opacity: 0.8; }
     gap: 30px;
 }
 
-/* Стили для карточек новостей */
+/* Карточки новостей (как блоки) */
 .news-card {
     background: var(--card-bg);
-    border-radius: 10px;
+    border-radius: var(--radius);
     overflow: hidden;
     margin-bottom: 25px;
-    border: 1px solid var(--border);
-    transition: 0.3s;
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.1); /* Легкая тень для объема */
+    transition: transform 0.2s;
 }
 
-.news-card img { width: 100%; height: 250px; object-fit: cover; }
+.news-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
+
+.news-card img { width: 100%; height: 250px; object-fit: cover; border-bottom: 2px solid var(--border); }
 .news-content { padding: 20px; }
 .news-content h2 { margin: 0 0 10px 0; color: var(--accent); }
 .news-content p { color: var(--text-muted); line-height: 1.6; }
+.news-content small { color: #888; font-weight: bold; }
 
+/* Мобильная адаптация */
 @media (max-width: 768px) {
     .main-container { grid-template-columns: 1fr; }
+    header { flex-direction: column; gap: 15px; }
+    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    nav a { margin: 0; }
 }
