@@ -1,83 +1,42 @@
 const newsList = [
     {
         title: "Minecraft 1.21.5: Релиз весеннего патча",
-        description: "Mojang выпустили исправление для медных ламп и оптимизировали чанки.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/key-art/TrickyTrials_Standard_Vertical.jpg",
-        date: "15.03.2026",
+        description: "Кратко: Исправление для медных ламп и оптимизация чанков.",
+        fullText: "Сегодня Mojang выпустили долгожданный весенний патч 1.21.5!\n\nЧто нового:\n1. Медные лампы теперь правильно окисляются во всех биомах.\n2. Дворец Испытаний получил новые комнаты с ловушками.\n3. Оптимизирована генерация чанков (прирост FPS на 15%).\n\nРазработчики советуют сделать бэкап миров перед обновлением!",
+        image: "https://placehold.co/800x400/1b5e20/55ff55?text=UPDATE+1.21.5",
+        date: "17.03.2026",
         category: "Обновления"
     },
     {
-        title: "Топ 5 шейдеров для слабых ПК 2026",
-        description: "Лучшие подборки для тех, кто хочет красивую картинку без лагов.",
-        image: "https://files.poggit.pmmp.io/res/9431/icon.png",
+        title: "Топ 5 модов на магию для 1.21",
+        description: "Кратко: Лучшие сборки для тех, кто хочет стать волшебником.",
+        fullText: "Надоело махать мечом? Мы собрали 5 лучших магических модов для версии 1.21!\n\n- Botania: магия цветов и маны.\n- Iron's Spells: классические заклинания и посохи.\n- Blood Magic: темные ритуалы.\n- Ars Nouveau: создавай свои собственные заклинания.\n\nСсылки на скачивание скоро появятся в нашем разделе 'Моды'!",
+        image: "https://placehold.co/800x400/222222/55ff55?text=MAGIC+MODS",
+        date: "16.03.2026",
+        category: "Моды"
+    },
+    {
+        title: "Как быстро найти Дворец Испытаний?",
+        description: "Кратко: Полный гайд по навигации в новой структуре.",
+        fullText: "Дворец Испытаний (Trial Chambers) — это огромная подземная структура из меди и туфа.\n\nКак найти:\n1. Купите карту исследователя у Картографа (уровень Подмастерье).\n2. Копайте на высоте от -20 до -40.\n3. Ищите залежи медной руды и туфа, они часто генерируются вокруг дворца.\n\nНе забудьте взять зелья огнестойкости, там много спавнеров Бризов!",
+        image: "https://placehold.co/800x400/1b5e20/ffffff?text=TRIAL+CHAMBERS+GUIDE",
+        date: "15.03.2026",
+        category: "Гайды"
+    },
+    {
+        title: "OptiFine против Sodium: Что выбрать?",
+        description: "Кратко: Тестируем FPS на слабых и мощных ПК в 2026 году.",
+        fullText: "Извечный спор: OptiFine или Sodium?\n\nНаши тесты показали:\n- Если у вас слабый ПК и вам нужен чистый FPS: выбирайте Sodium + Lithium.\n- Если вы любите шейдеры, кастомные текстуры и плащи: OptiFine всё ещё хорош, но Iris Shaders работает быстрее.\n\nВывод: Sodium выигрывает по производительности почти в 2 раза.",
+        image: "https://placehold.co/800x400/222222/ffffff?text=OPTIFINE+vs+SODIUM",
         date: "14.03.2026",
         category: "Моды"
     },
     {
-        title: "Как найти Дворец Испытаний?",
-        description: "Полный гайд по навигации в новой структуре и поиску ключей.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/screenshots/trial-chambers-hero.jpg",
-        date: "13.03.2026",
-        category: "Гайды"
-    },
-    {
-        title: "Новый моб: Медный Голем возвращается?",
-        description: "Слухи от разработчиков о добавлении старого кандидата из голосования.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC_MobVote_2021_CopperGolem_1080x1080.jpg",
+        title: "Анонс летнего обновления 1.22",
+        description: "Кратко: Первые слухи от инсайдеров. Что нас ждет?",
+        fullText: "В сети появились первые утечки о версии 1.22!\n\nПо слухам, нас ждет 'End Update' (Обновление Энда). Планируется добавление новых биомов на островах Края, переработка дракона и новая руда, которая будет прочнее незерита.\n\nОфициальный анонс ожидается на Minecraft Live в октябре.",
+        image: "https://placehold.co/800x400/1b5e20/55ff55?text=MINECRAFT+1.22+LEAKS",
         date: "12.03.2026",
-        category: "Слухи"
-    },
-    {
-        title: "Сборка модов 'Весенний Крафт'",
-        description: "15 модов на цветы, фермерство и уютную атмосферу в лесу.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/screenshots/pollen-hero.jpg",
-        date: "11.03.2026",
-        category: "Сборки"
-    },
-    {
-        title: "Команда /attribute: Как стать гигантом?",
-        description: "Разбираем параметры роста и силы игрока через консоль.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/screenshots/giant-update.jpg",
-        date: "10.03.2026",
-        category: "Команды"
-    },
-    {
-        title: "Лучшие сервера для выживания 1.21",
-        description: "Рейтинг честных серверов без доната и креатива.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/key-art/survival-servers.jpg",
-        date: "09.03.2026",
-        category: "Сервера"
-    },
-    {
-        title: "Авто-ферма железа 2026",
-        description: "Самая компактная схема, работающая на всех новых версиях.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/screenshots/iron-farm.jpg",
-        date: "08.03.2026",
-        category: "Редстоун"
-    },
-    {
-        title: "Секреты командного блока",
-        description: "Как сделать кастомный магазин прямо в игре за 5 минут.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/screenshots/command-block-gui.jpg",
-        date: "07.03.2026",
-        category: "Команды"
-    },
-    {
-        title: "Minecraft Movie: Новый трейлер",
-        description: "Обсуждаем внешность Джека Блэка в роли Стива.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/key-art/A_Minecraft_Movie_Horizontal.jpg",
-        date: "06.03.2026",
-        category: "Кино"
+        category: "Обновления"
     }
 ];
-
-// Для примера я продублировал записи, чтобы было 25+ для теста поиска
-for (let i = 0; i < 15; i++) {
-    newsList.push({
-        title: `Архивная новость #${i + 1}`,
-        description: "Старая, но полезная информация для игроков на версиях 1.12 - 1.20.",
-        image: "https://www.minecraft.net/content/dam/games/minecraft/screenshots/old-mc.jpg",
-        date: "01.03.2026",
-        category: "Архив"
-    });
-}
