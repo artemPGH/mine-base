@@ -54,34 +54,64 @@ nav a { margin-left: 20px; font-weight: 600; color: #fff; text-transform: upperc
     color: #fff !important;
 }
 
-/* Секция поиска с темной подложкой */
+/* --- ОБНОВЛЕННАЯ СЕКЦИЯ ПОИСКА --- */
 .search-section {
     padding: 100px 20px;
     text-align: center;
-    background: url('https://images.unsplash.com/photo-1605639744655-bce6a4f2101e?q=80&w=1920') center/cover;
+    /* Добавили крутой фон с Майнкрафтом и легким затемнением */
+    background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1623934199716-dc3100360473?auto=format&fit=crop&q=80&w=1920') center/cover;
     border-bottom: 4px solid var(--border);
 }
 
 .hero-overlay {
-    background: rgba(0, 0, 0, 0.7); /* Черный прямоугольник с прозрачностью */
+    background: rgba(0, 0, 0, 0.6);
     display: inline-block;
     padding: 30px;
-    border-radius: 8px;
-    backdrop-filter: blur(5px); /* Размытие заднего фона */
-    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(85, 255, 85, 0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Обертка для поиска и фильтра */
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 25px;
+    max-width: 700px;
+}
+
+.filter-select {
+    padding: 15px;
+    background: #222;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filter-select:hover {
+    background: var(--accent);
+    color: #000;
 }
 
 .search-box {
-    margin-top: 25px;
+    flex-grow: 1; /* Поиск занимает всё оставшееся место */
     padding: 15px 20px;
-    width: 90%;
-    max-width: 600px;
     border-radius: var(--radius);
     border: 2px solid var(--accent);
     background: var(--card-bg);
     color: var(--text-main);
+    font-size: 1.1rem;
     outline: none;
 }
+/* --- КОНЕЦ БЛОКА ПОИСКА --- */
 
 .main-container {
     max-width: 1200px;
