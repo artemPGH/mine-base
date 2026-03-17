@@ -7,20 +7,7 @@
     --header-bg: #1b5e20;
     --panel-btn: #ffaa00;
     --border: #333333;
-    --radius: 4px;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        --bg-color: #f4f5f0;
-        --card-bg: #ffffff;
-        --text-main: #212121;
-        --text-muted: #666666;
-        --accent: #43a047;
-        --header-bg: #4caf50;
-        --panel-btn: #f57c00;
-        --border: #cccccc;
-    }
+    --radius: 8px; /* Сделал углы чуть мягче */
 }
 
 body {
@@ -28,7 +15,6 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     margin: 0;
-    transition: background-color 0.3s, color 0.3s;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -42,7 +28,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     border-bottom: 4px solid var(--accent);
 }
 
@@ -61,25 +47,27 @@ nav a:hover { color: var(--accent); }
 }
 .btn-panel:active { transform: translateY(3px); border-bottom: 0; }
 
-/* --- БЛОК ПОИСКА С ФОНОМ --- */
+/* --- НЕУБИВАЕМЫЙ БЛОЧНЫЙ ФОН ИЗ CSS --- */
 .search-section {
     padding: 100px 20px;
     text-align: center;
-    /* Разделил свойства фона для 100% совместимости */
-    background-image: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1605639744655-bce6a4f2101e?q=80&w=1920');
-    background-size: cover;
-    background-position: center;
+    background-color: #0f0f0f;
+    background-image: 
+        linear-gradient(45deg, #151515 25%, transparent 25%, transparent 75%, #151515 75%, #151515), 
+        linear-gradient(45deg, #151515 25%, transparent 25%, transparent 75%, #151515 75%, #151515);
+    background-size: 64px 64px;
+    background-position: 0 0, 32px 32px;
     border-bottom: 4px solid var(--border);
 }
 
 .hero-overlay {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(18, 18, 18, 0.85);
     display: inline-block;
-    padding: 30px;
+    padding: 30px 40px;
     border-radius: 12px;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(85, 255, 85, 0.2);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--accent);
+    box-shadow: 0 10px 30px rgba(85, 255, 85, 0.1);
 }
 
 .search-wrapper {
@@ -103,12 +91,6 @@ nav a:hover { color: var(--accent); }
     font-weight: bold;
     outline: none;
     cursor: pointer;
-    transition: 0.2s;
-}
-
-.filter-select:hover {
-    background: var(--accent);
-    color: #000;
 }
 
 .search-box {
@@ -138,12 +120,12 @@ nav a:hover { color: var(--accent); }
     overflow: hidden;
     margin-bottom: 25px;
     border: 2px solid var(--border);
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+    cursor: pointer;
     transition: 0.2s;
 }
 
-.news-card:hover { transform: scale(1.01); border-color: var(--accent); }
-.news-card img { width: 100%; height: 280px; object-fit: cover; border-bottom: 2px solid var(--border); }
+.news-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 5px 15px rgba(85,255,85,0.2); }
+.news-card img { width: 100%; height: 250px; object-fit: cover; border-bottom: 2px solid var(--border); }
 .news-content { padding: 20px; }
 
 .sidebar-block {
@@ -166,15 +148,48 @@ nav a:hover { color: var(--accent); }
     border-bottom: 3px solid #000;
     cursor: pointer;
 }
-
 .tool-btn:hover { background: var(--accent); color: #000; }
 
-/* Адаптация под телефоны */
+/* --- МОДАЛЬНОЕ ОКНО (ДЛЯ ОТКРЫТИЯ НОВОСТИ) --- */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 2000; 
+    left: 0; top: 0; 
+    width: 100%; height: 100%; 
+    background-color: rgba(0,0,0,0.8); 
+    backdrop-filter: blur(5px);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 5% auto;
+    padding: 30px;
+    border: 2px solid var(--accent);
+    width: 90%;
+    max-width: 800px;
+    border-radius: var(--radius);
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+
+.close-btn {
+    color: var(--text-muted);
+    float: right;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-btn:hover { color: var(--accent); }
+#modalImg { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; margin-bottom: 20px; }
+.modal-meta { color: var(--accent); font-weight: bold; margin-bottom: 20px; display: inline-block; background: #222; padding: 5px 15px; border-radius: 20px;}
+#modalText { line-height: 1.6; font-size: 1.1rem; white-space: pre-line; }
+
 @media (max-width: 768px) {
     .main-container { grid-template-columns: 1fr; }
     .search-wrapper { flex-direction: column; }
     .filter-select { width: 100%; }
-    header { flex-direction: column; gap: 15px; }
-    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    nav a { margin: 0; }
 }
