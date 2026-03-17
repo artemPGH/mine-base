@@ -24,7 +24,18 @@
         <div class="hero-overlay">
             <h1 style="margin: 0; color: #fff; font-size: 2.5rem;">Весеннее обновление MINE-BASE 🌸</h1>
             <p style="color: #55ff55; font-size: 1.2rem; margin: 10px 0 0 0;">Ищи моды, команды, гайды и новости</p>
-            <input type="text" id="searchInput" class="search-box" placeholder="Введите название мода или версию...">
+            
+            <div class="search-wrapper">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="all">📁 Все</option>
+                    <option value="Обновления">📢 Обновления</option>
+                    <option value="Моды">🧩 Моды</option>
+                    <option value="Гайды">📚 Гайды</option>
+                    <option value="Команды">⌨️ Команды</option>
+                </select>
+                <input type="text" id="searchInput" class="search-box" placeholder="Введите название мода или версию...">
+            </div>
+
         </div>
     </section>
 
@@ -51,13 +62,18 @@
     <script>
         const container = document.getElementById('news-container');
         const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
 
         function displayNews(data) {
             container.innerHTML = '';
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Ничего не найдено 😢 Попробуй изменить фильтры.</p>';
+                return;
+            }
             data.forEach(item => {
                 container.innerHTML += `
                     <article class="news-card">
-                        <img src="${item.image}" alt="img">
+                        <img src="${item.image}" alt="img" onerror="this.src='https://images.unsplash.com/photo-1605639744655-bce6a4f2101e?q=80&w=600'">
                         <div class="news-content">
                             <h2 style="color: var(--accent); margin:0;">${item.title}</h2>
                             <p>${item.description}</p>
@@ -68,13 +84,25 @@
             });
         }
 
+        // Общая функция для фильтрации (работает и при вводе текста, и при выборе категории)
+        function filterContent() {
+            const textVal = searchInput.value.toLowerCase();
+            const catVal = categoryFilter.value;
+
+            const filtered = newsList.filter(n => {
+                const textMatch = n.title.toLowerCase().includes(textVal) || n.description.toLowerCase().includes(textVal);
+                const catMatch = (catVal === 'all') || (n.category === catVal);
+                return textMatch && catMatch; // Должно совпадать и то, и другое
+            });
+            displayNews(filtered);
+        }
+
+        // Запускаем при загрузке
         window.onload = () => displayNews(newsList);
 
-        searchInput.addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            const filtered = newsList.filter(n => n.title.toLowerCase().includes(val) || n.description.toLowerCase().includes(val));
-            displayNews(filtered);
-        });
+        // Слушаем изменения в тексте и в выпадающем списке
+        searchInput.addEventListener('input', filterContent);
+        categoryFilter.addEventListener('change', filterContent);
     </script>
 </body>
 </html>
