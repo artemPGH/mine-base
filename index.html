@@ -11,7 +11,7 @@
 
     <header>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <img src="logo.png" alt="MINE-BASE Logo" style="height: 50px; width: auto; filter: drop-shadow(0 0 5px rgba(85, 255, 85, 0.3));">
+            <img src="logo.png" alt="Logo" style="height: 50px; width: auto; filter: drop-shadow(0 0 5px rgba(85, 255, 85, 0.3));">
             <div class="logo">MINE-BASE</div>
         </div>
         <nav>
@@ -23,7 +23,7 @@
     <section class="search-section">
         <div class="hero-overlay">
             <h1 style="margin: 0; color: #fff; font-size: 2.5rem;">Весеннее обновление MINE-BASE 🌸</h1>
-            <p style="color: #55ff55; font-size: 1.2rem; margin: 10px 0 0 0;">Ищи моды, команды, гайды и новости</p>
+            <p style="color: var(--accent); font-size: 1.2rem; margin: 10px 0 0 0;">Ищи моды, команды, гайды и новости</p>
             
             <div class="search-wrapper">
                 <select id="categoryFilter" class="filter-select">
@@ -31,11 +31,9 @@
                     <option value="Обновления">📢 Обновления</option>
                     <option value="Моды">🧩 Моды</option>
                     <option value="Гайды">📚 Гайды</option>
-                    <option value="Команды">⌨️ Команды</option>
                 </select>
                 <input type="text" id="searchInput" class="search-box" placeholder="Введите название мода или версию...">
             </div>
-
         </div>
     </section>
 
@@ -45,35 +43,46 @@
         <aside>
             <div class="sidebar-block">
                 <h3 style="color: var(--accent); margin-top:0;">🛠 Полезные инструменты</h3>
+                <a href="panel.html" class="tool-btn">Калькулятор портала</a>
                 <a href="#" class="tool-btn">Генератор команд /give</a>
-                <a href="#" class="tool-btn">Калькулятор портала</a>
-                <a href="#" class="tool-btn">Таблица зачарований</a>
             </div>
-            
             <div class="sidebar-block">
                 <h3 style="color: var(--accent); margin-top:0;">📊 Статус серверов</h3>
                 <p style="font-size: 0.9rem;">Hypixel: <span style="color: #55ff55;">Online</span></p>
-                <p style="font-size: 0.9rem;">MINE-BASE Server: <span style="color: #ff9800;">Coming Soon</span></p>
             </div>
         </aside>
     </main>
+
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <img id="modalImg" src="" alt="img">
+            <h1 id="modalTitle" style="margin-top: 0;">Заголовок</h1>
+            <div class="modal-meta"><span id="modalDate"></span> | <span id="modalCat"></span></div>
+            <p id="modalText">Текст новости...</p>
+        </div>
+    </div>
 
     <script src="news-data.js"></script>
     <script>
         const container = document.getElementById('news-container');
         const searchInput = document.getElementById('searchInput');
         const categoryFilter = document.getElementById('categoryFilter');
+        const modal = document.getElementById('newsModal');
+
+        let currentData = [];
 
         function displayNews(data) {
+            currentData = data; // Сохраняем текущие отфильтрованные данные
             container.innerHTML = '';
             if (data.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Ничего не найдено 😢 Попробуй изменить фильтры.</p>';
+                container.innerHTML = '<h3 style="text-align:center;">Ничего не найдено 😢</h3>';
                 return;
             }
-            data.forEach(item => {
+            data.forEach((item, index) => {
                 container.innerHTML += `
-                    <article class="news-card">
-                        <img src="${item.image}" alt="img" onerror="this.src='https://images.unsplash.com/photo-1605639744655-bce6a4f2101e?q=80&w=600'">
+                    <article class="news-card" onclick="openModal(${index})">
+                        <img src="${item.image}" alt="img">
                         <div class="news-content">
                             <h2 style="color: var(--accent); margin:0;">${item.title}</h2>
                             <p>${item.description}</p>
@@ -84,7 +93,6 @@
             });
         }
 
-        // Общая функция для фильтрации (работает и при вводе текста, и при выборе категории)
         function filterContent() {
             const textVal = searchInput.value.toLowerCase();
             const catVal = categoryFilter.value;
@@ -92,15 +100,37 @@
             const filtered = newsList.filter(n => {
                 const textMatch = n.title.toLowerCase().includes(textVal) || n.description.toLowerCase().includes(textVal);
                 const catMatch = (catVal === 'all') || (n.category === catVal);
-                return textMatch && catMatch; // Должно совпадать и то, и другое
+                return textMatch && catMatch;
             });
             displayNews(filtered);
         }
 
-        // Запускаем при загрузке
-        window.onload = () => displayNews(newsList);
+        // Функции модального окна
+        function openModal(index) {
+            const item = currentData[index];
+            document.getElementById('modalImg').src = item.image;
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalDate').innerText = '📅 ' + item.date;
+            document.getElementById('modalCat').innerText = '🏷️ ' + item.category;
+            // Выводим полный текст!
+            document.getElementById('modalText').innerText = item.fullText; 
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden"; // Блокируем скролл сайта
+        }
 
-        // Слушаем изменения в тексте и в выпадающем списке
+        function closeModal() {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // Закрытие по клику вне окна
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        window.onload = () => displayNews(newsList);
         searchInput.addEventListener('input', filterContent);
         categoryFilter.addEventListener('change', filterContent);
     </script>
