@@ -7,7 +7,7 @@
     --header-bg: #1b5e20;
     --panel-btn: #ffaa00;
     --border: #333333;
-    --radius: 8px; /* Сделал углы чуть мягче */
+    --radius: 8px;
 }
 
 body {
@@ -15,10 +15,12 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     margin: 0;
+    overflow-x: hidden;
 }
 
 a { text-decoration: none; color: inherit; }
 
+/* --- ШАПКА --- */
 header {
     background-color: var(--header-bg);
     padding: 15px 5%;
@@ -28,7 +30,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     border-bottom: 4px solid var(--accent);
 }
 
@@ -43,31 +45,30 @@ nav a:hover { color: var(--accent); }
     border-radius: var(--radius);
     color: #fff !important;
     border-bottom: 3px solid rgba(0,0,0,0.3);
-    transition: 0.1s;
 }
-.btn-panel:active { transform: translateY(3px); border-bottom: 0; }
 
-/* --- НЕУБИВАЕМЫЙ БЛОЧНЫЙ ФОН ИЗ CSS --- */
+/* --- ПОИСК И ФОН (БЛОКИ) --- */
 .search-section {
-    padding: 100px 20px;
+    padding: 80px 20px;
     text-align: center;
     background-color: #0f0f0f;
+    /* Узор в стиле блоков */
     background-image: 
         linear-gradient(45deg, #151515 25%, transparent 25%, transparent 75%, #151515 75%, #151515), 
         linear-gradient(45deg, #151515 25%, transparent 25%, transparent 75%, #151515 75%, #151515);
-    background-size: 64px 64px;
-    background-position: 0 0, 32px 32px;
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
     border-bottom: 4px solid var(--border);
 }
 
 .hero-overlay {
-    background: rgba(18, 18, 18, 0.85);
+    background: rgba(18, 18, 18, 0.9);
     display: inline-block;
     padding: 30px 40px;
     border-radius: 12px;
     backdrop-filter: blur(10px);
     border: 2px solid var(--accent);
-    box-shadow: 0 10px 30px rgba(85, 255, 85, 0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
 .search-wrapper {
@@ -87,9 +88,7 @@ nav a:hover { color: var(--accent); }
     color: var(--accent);
     border: 2px solid var(--accent);
     border-radius: var(--radius);
-    font-size: 1rem;
     font-weight: bold;
-    outline: none;
     cursor: pointer;
 }
 
@@ -104,7 +103,7 @@ nav a:hover { color: var(--accent); }
     outline: none;
 }
 
-/* --- ОСНОВНОЙ КОНТЕНТ --- */
+/* --- КОНТЕНТ И САЙДБАР --- */
 .main-container {
     max-width: 1200px;
     margin: 40px auto;
@@ -123,9 +122,8 @@ nav a:hover { color: var(--accent); }
     cursor: pointer;
     transition: 0.2s;
 }
-
-.news-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 5px 15px rgba(85,255,85,0.2); }
-.news-card img { width: 100%; height: 250px; object-fit: cover; border-bottom: 2px solid var(--border); }
+.news-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+.news-card img { width: 100%; height: 250px; object-fit: cover; }
 .news-content { padding: 20px; }
 
 .sidebar-block {
@@ -133,14 +131,14 @@ nav a:hover { color: var(--accent); }
     padding: 20px;
     border-radius: var(--radius);
     border: 2px solid var(--border);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .tool-btn {
     display: block;
     background: #333;
     color: #fff;
-    padding: 10px;
+    padding: 12px;
     margin-top: 10px;
     text-align: center;
     border-radius: 4px;
@@ -150,107 +148,86 @@ nav a:hover { color: var(--accent); }
 }
 .tool-btn:hover { background: var(--accent); color: #000; }
 
-/* --- МОДАЛЬНОЕ ОКНО (ДЛЯ ОТКРЫТИЯ НОВОСТИ) --- */
+/* --- СТАТУС СЕРВЕРОВ --- */
+.server-item {
+    position: relative;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    cursor: help;
+}
+
+.server-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    right: 110%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #252525;
+    border: 2px solid var(--accent);
+    padding: 15px;
+    width: 200px;
+    border-radius: 8px;
+    z-index: 100;
+    transition: 0.3s;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+}
+.server-item:hover .server-tooltip { visibility: visible; opacity: 1; }
+
+.server-ip-box {
+    background: #000;
+    padding: 5px;
+    margin-top: 8px;
+    color: var(--accent);
+    font-family: monospace;
+    font-size: 0.8rem;
+    border: 1px dashed var(--accent);
+}
+
+/* --- МОДАЛЬНЫЕ ОКНА --- */
 .modal {
     display: none; 
     position: fixed; 
     z-index: 2000; 
     left: 0; top: 0; 
     width: 100%; height: 100%; 
-    background-color: rgba(0,0,0,0.8); 
+    background: rgba(0,0,0,0.85); 
     backdrop-filter: blur(5px);
-    overflow-y: auto;
 }
 
 .modal-content {
-    background-color: var(--card-bg);
+    background: var(--card-bg);
     margin: 5% auto;
     padding: 30px;
     border: 2px solid var(--accent);
     width: 90%;
-    max-width: 800px;
-    border-radius: var(--radius);
+    max-width: 600px;
+    border-radius: 12px;
     position: relative;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
 }
 
 .close-btn {
-    color: var(--text-muted);
-    float: right;
-    font-size: 35px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.close-btn:hover { color: var(--accent); }
-#modalImg { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; margin-bottom: 20px; }
-.modal-meta { color: var(--accent); font-weight: bold; margin-bottom: 20px; display: inline-block; background: #222; padding: 5px 15px; border-radius: 20px;}
-#modalText { line-height: 1.6; font-size: 1.1rem; white-space: pre-line; }
-
-@media (max-width: 768px) {
-    .main-container { grid-template-columns: 1fr; }
-    .search-wrapper { flex-direction: column; }
-    .filter-select { width: 100%; }
-}
-
-/* --- СТАТУС СЕРВЕРОВ И ПОДСКАЗКИ --- */
-.server-item {
-    position: relative;
-    cursor: help;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-.server-item:last-child { border-bottom: none; }
-
-/* Сама всплывающая панелька сервера */
-.server-tooltip {
-    visibility: hidden;
     position: absolute;
-    right: 105%; /* Появляется слева от списка */
-    top: -10px;
-    background: var(--card-bg);
-    border: 2px solid var(--accent);
-    padding: 15px;
-    border-radius: var(--radius);
-    width: 220px;
-    z-index: 100;
-    opacity: 0;
-    transition: 0.2s;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.8);
-    pointer-events: none; /* Чтобы мышка не сбивала ховер */
-}
-.server-item:hover .server-tooltip {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-10px);
+    right: 20px; top: 10px;
+    color: var(--text-muted);
+    font-size: 30px;
+    cursor: pointer;
 }
 
-.server-ip-box {
-    background: #111;
-    padding: 8px;
-    text-align: center;
-    border-radius: 4px;
-    font-family: monospace;
-    color: var(--accent);
-    margin-top: 10px;
-    border: 1px dashed var(--accent);
-}
-
-/* --- СТИЛИ ДЛЯ ГЕНЕРАТОРА КОМАНД --- */
 .calc-input {
     width: 100%;
     padding: 12px;
     background: #111;
     border: 1px solid var(--border);
-    color: white;
-    margin-top: 5px;
+    color: #fff;
+    margin: 8px 0 15px 0;
     border-radius: 4px;
-    font-size: 1rem;
-    box-sizing: border-box;
 }
-.calc-input:focus { border-color: var(--accent); outline: none; }
+
+@media (max-width: 768px) {
+    .main-container { grid-template-columns: 1fr; }
+    .server-tooltip { right: 0; top: 100%; transform: none; width: 100%; box-sizing: border-box; }
+}
