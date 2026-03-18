@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINE-BASE | База Знаний</title>
+    <title>MINE-BASE | Лучшая База Знаний</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,7 +11,7 @@
 
     <header>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <img src="logo.png" alt="Logo" style="height: 50px; width: auto; filter: drop-shadow(0 0 5px rgba(85, 255, 85, 0.3));">
+            <img src="logo.png" alt="Logo" style="height: 50px;">
             <div class="logo">MINE-BASE</div>
         </div>
         <nav>
@@ -22,17 +22,17 @@
 
     <section class="search-section">
         <div class="hero-overlay">
-            <h1 style="margin: 0; color: #fff; font-size: 2.5rem;">Весеннее обновление MINE-BASE 🌸</h1>
-            <p style="color: var(--accent); font-size: 1.2rem; margin: 10px 0 0 0;">Ищи моды, команды, гайды и новости</p>
+            <h1 style="margin: 0; font-size: 2.2rem;">База Знаний MINE-BASE 🏅</h1>
+            <p style="color: var(--accent); margin: 10px 0;">Все новости, моды и гайды в одном месте</p>
             
             <div class="search-wrapper">
                 <select id="categoryFilter" class="filter-select">
                     <option value="all">📁 Все</option>
-                    <option value="Обновления">📢 Обновления</option>
+                    <option value="Обновления">📢 Новости</option>
                     <option value="Моды">🧩 Моды</option>
                     <option value="Гайды">📚 Гайды</option>
                 </select>
-                <input type="text" id="searchInput" class="search-box" placeholder="Введите название мода или версию...">
+                <input type="text" id="searchInput" class="search-box" placeholder="Что ищем сегодня?">
             </div>
         </div>
     </section>
@@ -42,13 +42,16 @@
 
         <aside>
             <div class="sidebar-block">
-                <h3 style="color: var(--accent); margin-top:0;">🛠 Полезные инструменты</h3>
+                <h3 style="color: var(--accent); margin-top:0;">🛠 Инструменты</h3>
+                <button class="tool-btn" style="width:100%; border:none;" onclick="openCmdModal()">Генератор /give</button>
                 <a href="panel.html" class="tool-btn">Калькулятор портала</a>
-                <a href="#" class="tool-btn">Генератор команд /give</a>
             </div>
+
             <div class="sidebar-block">
-                <h3 style="color: var(--accent); margin-top:0;">📊 Статус серверов</h3>
-                <p style="font-size: 0.9rem;">Hypixel: <span style="color: #55ff55;">Online</span></p>
+                <h3 style="color: var(--accent); margin-top:0;">📊 Мониторинг (Online)</h3>
+                <div id="server-list">
+                    <p style="color:gray; text-align:center;">Опрашиваем сервера...</p>
+                </div>
             </div>
         </aside>
     </main>
@@ -56,10 +59,34 @@
     <div id="newsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
-            <img id="modalImg" src="" alt="img">
-            <h1 id="modalTitle" style="margin-top: 0;">Заголовок</h1>
-            <div class="modal-meta"><span id="modalDate"></span> | <span id="modalCat"></span></div>
-            <p id="modalText">Текст новости...</p>
+            <img id="modalImg" src="" style="width:100%; border-radius:8px; margin-bottom:15px;">
+            <h2 id="modalTitle" style="color:var(--accent); margin:0;"></h2>
+            <p id="modalText" style="line-height:1.6; white-space:pre-line;"></p>
+        </div>
+    </div>
+
+    <div id="cmdModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-btn" onclick="closeCmdModal()">&times;</span>
+            <h2 style="color: var(--accent); margin-top:0;">⚙️ Генератор /give</h2>
+            
+            <label>Кому:</label>
+            <select id="cmdTarget" class="calc-input" onchange="updateCmd()">
+                <option value="@p">Ближайшему (@p)</option>
+                <option value="@s">Себе (@s)</option>
+                <option value="@a">Всем (@a)</option>
+            </select>
+
+            <label>Предмет (англ):</label>
+            <input type="text" id="cmdItem" class="calc-input" placeholder="diamond_block" oninput="updateCmd()">
+
+            <label>Кол-во:</label>
+            <input type="number" id="cmdCount" class="calc-input" value="1" oninput="updateCmd()">
+
+            <div style="background:#000; padding:15px; border-radius:4px; color:var(--accent); font-family:monospace; margin-bottom:15px;" id="cmdResult">
+                /give @p apple 1
+            </div>
+            <button class="tool-btn" style="width:100%; border:none;" onclick="copyCommand()">СКОПИРОВАТЬ</button>
         </div>
     </div>
 
@@ -68,25 +95,20 @@
         const container = document.getElementById('news-container');
         const searchInput = document.getElementById('searchInput');
         const categoryFilter = document.getElementById('categoryFilter');
-        const modal = document.getElementById('newsModal');
-
         let currentData = [];
 
+        // --- ЛОГИКА НОВОСТЕЙ ---
         function displayNews(data) {
-            currentData = data; // Сохраняем текущие отфильтрованные данные
+            currentData = data;
             container.innerHTML = '';
-            if (data.length === 0) {
-                container.innerHTML = '<h3 style="text-align:center;">Ничего не найдено 😢</h3>';
-                return;
-            }
             data.forEach((item, index) => {
                 container.innerHTML += `
                     <article class="news-card" onclick="openModal(${index})">
-                        <img src="${item.image}" alt="img">
+                        <img src="${item.image}">
                         <div class="news-content">
-                            <h2 style="color: var(--accent); margin:0;">${item.title}</h2>
+                            <h2 style="color:var(--accent); margin:0;">${item.title}</h2>
                             <p>${item.description}</p>
-                            <small>📅 ${item.date} | 🏷️ ${item.category}</small>
+                            <small>🏷️ ${item.category} | 📅 ${item.date}</small>
                         </div>
                     </article>
                 `;
@@ -94,43 +116,76 @@
         }
 
         function filterContent() {
-            const textVal = searchInput.value.toLowerCase();
-            const catVal = categoryFilter.value;
-
+            const text = searchInput.value.toLowerCase();
+            const cat = categoryFilter.value;
             const filtered = newsList.filter(n => {
-                const textMatch = n.title.toLowerCase().includes(textVal) || n.description.toLowerCase().includes(textVal);
-                const catMatch = (catVal === 'all') || (n.category === catVal);
-                return textMatch && catMatch;
+                const mText = n.title.toLowerCase().includes(text) || n.description.toLowerCase().includes(text);
+                const mCat = (cat === 'all' || n.category === cat);
+                return mText && mCat;
             });
             displayNews(filtered);
         }
 
-        // Функции модального окна
         function openModal(index) {
             const item = currentData[index];
             document.getElementById('modalImg').src = item.image;
             document.getElementById('modalTitle').innerText = item.title;
-            document.getElementById('modalDate').innerText = '📅 ' + item.date;
-            document.getElementById('modalCat').innerText = '🏷️ ' + item.category;
-            // Выводим полный текст!
-            document.getElementById('modalText').innerText = item.fullText; 
-            modal.style.display = "block";
-            document.body.style.overflow = "hidden"; // Блокируем скролл сайта
+            document.getElementById('modalText').innerText = item.fullText;
+            document.getElementById('newsModal').style.display = 'block';
         }
 
-        function closeModal() {
-            modal.style.display = "none";
-            document.body.style.overflow = "auto";
+        function closeModal() { document.getElementById('newsModal').style.display = 'none'; }
+
+        // --- ГЕНЕРАТОР КОМАНД ---
+        function openCmdModal() { document.getElementById('cmdModal').style.display = 'block'; updateCmd(); }
+        function closeCmdModal() { document.getElementById('cmdModal').style.display = 'none'; }
+
+        function updateCmd() {
+            const target = document.getElementById('cmdTarget').value;
+            let item = document.getElementById('cmdItem').value || 'apple';
+            if(!item.includes(':')) item = 'minecraft:' + item;
+            const count = document.getElementById('cmdCount').value || 1;
+            document.getElementById('cmdResult').innerText = `/give ${target} ${item} ${count}`;
         }
 
-        // Закрытие по клику вне окна
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
+        function copyCommand() {
+            navigator.clipboard.writeText(document.getElementById('cmdResult').innerText);
+            alert("Команда скопирована!");
         }
 
-        window.onload = () => displayNews(newsList);
+        // --- МОНИТОРИНГ СЕРВЕРОВ ---
+        const servers = [
+            { ip: 'mc.hypixel.net', name: 'Hypixel' },
+            { ip: 'play.wynncraft.com', name: 'Wynncraft' },
+            { ip: 'play.funtime.su', name: 'FunTime' },
+            { ip: 'mc.reallyworld.ru', name: 'ReallyWorld' },
+            { ip: 'play.cubecraft.net', name: 'CubeCraft' }
+        ];
+
+        function loadServers() {
+            const sList = document.getElementById('server-list');
+            sList.innerHTML = '';
+            servers.forEach(srv => {
+                fetch(`https://api.mcsrvstat.us/2/${srv.ip}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        const online = data.online ? `${data.players.online.toLocaleString()} 🟢` : 'OFF 🔴';
+                        sList.innerHTML += `
+                            <div class="server-item">
+                                <span>${srv.name}</span>
+                                <span style="color:var(--accent)">${online}</span>
+                                <div class="server-tooltip">
+                                    <strong>${srv.name}</strong><br>
+                                    IP: ${srv.ip}<br><br>
+                                    <div class="server-ip-box">Нажми, чтобы скопировать IP</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+            });
+        }
+
+        window.onload = () => { displayNews(newsList); loadServers(); };
         searchInput.addEventListener('input', filterContent);
         categoryFilter.addEventListener('change', filterContent);
     </script>
