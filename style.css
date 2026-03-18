@@ -193,3 +193,64 @@ nav a:hover { color: var(--accent); }
     .search-wrapper { flex-direction: column; }
     .filter-select { width: 100%; }
 }
+
+/* --- СТАТУС СЕРВЕРОВ И ПОДСКАЗКИ --- */
+.server-item {
+    position: relative;
+    cursor: help;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+.server-item:last-child { border-bottom: none; }
+
+/* Сама всплывающая панелька сервера */
+.server-tooltip {
+    visibility: hidden;
+    position: absolute;
+    right: 105%; /* Появляется слева от списка */
+    top: -10px;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    padding: 15px;
+    border-radius: var(--radius);
+    width: 220px;
+    z-index: 100;
+    opacity: 0;
+    transition: 0.2s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+    pointer-events: none; /* Чтобы мышка не сбивала ховер */
+}
+.server-item:hover .server-tooltip {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-10px);
+}
+
+.server-ip-box {
+    background: #111;
+    padding: 8px;
+    text-align: center;
+    border-radius: 4px;
+    font-family: monospace;
+    color: var(--accent);
+    margin-top: 10px;
+    border: 1px dashed var(--accent);
+}
+
+/* --- СТИЛИ ДЛЯ ГЕНЕРАТОРА КОМАНД --- */
+.calc-input {
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    border: 1px solid var(--border);
+    color: white;
+    margin-top: 5px;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+.calc-input:focus { border-color: var(--accent); outline: none; }
