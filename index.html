@@ -47,42 +47,44 @@
 
             <div class="sidebar-block">
                 <h3 style="color: var(--accent); margin-top:0;">📊 СЕРВЕРА ONLINE</h3>
-                <div id="server-list"></div>
+                <div id="server-list">
+                    <p style="color: gray; font-size: 0.9rem;">Загрузка данных...</p>
+                </div>
             </div>
         </aside>
     </main>
 
     <div id="newsModal" class="modal">
         <div class="modal-content" style="max-width:700px">
-            <span style="float:right; cursor:pointer; font-size:24px;" onclick="closeModal()">&times;</span>
-            <img id="modalImg" src="" style="width:100%; border-radius:8px;">
-            <h2 id="modalTitle" style="color:var(--accent)"></h2>
-            <p id="modalText" style="line-height:1.6; white-space:pre-line;"></p>
+            <span style="float:right; cursor:pointer; font-size:28px; color:white;" onclick="closeModal()">&times;</span>
+            <img id="modalImg" src="" style="width:100%; border-radius:8px; margin-bottom: 20px;">
+            <h2 id="modalTitle" style="color:var(--accent); margin-bottom: 15px;"></h2>
+            <p id="modalText" style="line-height:1.7; white-space:pre-line; color: #ddd;"></p>
         </div>
     </div>
 
     <div id="cmdModal" class="modal">
         <div class="modal-content">
-            <span style="float:right; cursor:pointer; font-size:24px;" onclick="closeCmdModal()">&times;</span>
+            <span style="float:right; cursor:pointer; font-size:28px; color:white;" onclick="closeCmdModal()">&times;</span>
             <h2 style="color: var(--accent); margin-top:0;">ГЕНЕРАТОР /GIVE</h2>
             
-            <label>1. Получатель:</label>
+            <label style="font-size: 0.9rem;">Получатель:</label>
             <select id="cmdTarget" class="calc-input" onchange="updateCmd()">
                 <option value="@s">Себе (@s)</option>
                 <option value="@p">Ближайшему (@p)</option>
                 <option value="@a">Всем (@a)</option>
             </select>
 
-            <label>2. Поиск предмета (пиши на англ):</label>
+            <label style="font-size: 0.9rem;">Предмет (английский):</label>
             <div style="position:relative;">
-                <input type="text" id="itemSearch" class="calc-input" placeholder="Начни писать: diamond, sword..." oninput="filterItems()">
+                <input type="text" id="itemSearch" class="calc-input" placeholder="Начни писать: diamond..." oninput="filterItems()">
                 <div id="itemResults" class="item-search-results"></div>
             </div>
 
-            <label>3. Количество:</label>
+            <label style="font-size: 0.9rem;">Количество:</label>
             <input type="number" id="cmdCount" class="calc-input" value="1" min="1" oninput="updateCmd()">
 
-            <div style="background:#000; padding:15px; border-radius:4px; color:var(--accent); font-family:monospace; font-weight:bold; margin-bottom:15px;" id="cmdResult">
+            <div style="background:#000; padding:15px; border-radius:4px; color:var(--accent); font-family:monospace; font-weight:bold; margin-bottom:15px; border: 1px solid #333;" id="cmdResult">
                 /give @s minecraft:stone 1
             </div>
             <button class="tool-btn" onclick="copyCommand()">СКОПИРОВАТЬ КОМАНДУ</button>
@@ -91,19 +93,15 @@
 
     <script src="news-data.js"></script>
     <script>
-        // --- ДАННЫЕ ДЛЯ ПОИСКА БЛОКОВ ---
         const mcItems = ["stone", "grass_block", "dirt", "cobblestone", "oak_planks", "bedrock", "water_bucket", "lava_bucket", "sand", "gravel", "gold_ore", "iron_ore", "coal_ore", "diamond_ore", "lapis_ore", "emerald_ore", "obsidian", "torch", "diamond_block", "iron_block", "gold_block", "emerald_block", "tnt", "bookshelf", "diamond_sword", "iron_sword", "golden_apple", "elytra", "trident", "netherite_ingot", "netherite_sword", "ender_pearl", "experience_bottle", "totem_of_undying"];
-        
         let selectedItem = "stone";
 
-        // --- ГЕНЕРАТОР ---
+        // Генератор
         function filterItems() {
             const input = document.getElementById('itemSearch').value.toLowerCase();
             const results = document.getElementById('itemResults');
             results.innerHTML = '';
-            
             if (input.length < 1) { results.style.display = 'none'; return; }
-            
             const filtered = mcItems.filter(i => i.includes(input));
             if (filtered.length > 0) {
                 results.style.display = 'block';
@@ -136,7 +134,7 @@
         function openCmdModal() { document.getElementById('cmdModal').style.display = 'block'; }
         function closeCmdModal() { document.getElementById('cmdModal').style.display = 'none'; }
 
-        // --- НОВОСТИ И ФИЛЬТРЫ ---
+        // Новости
         const container = document.getElementById('news-container');
         function displayNews(data) {
             container.innerHTML = '';
@@ -145,9 +143,12 @@
                     <article class="news-card" onclick="openFullNews(${index})">
                         <img src="${item.image}">
                         <div class="news-content">
-                            <h2 style="color:var(--accent); margin:0;">${item.title}</h2>
+                            <h2 style="color:var(--accent)">${item.title}</h2>
                             <p>${item.description}</p>
-                            <small>🏷️ ${item.category} | 📅 ${item.date}</small>
+                            <div style="margin-top: 15px; font-size: 0.85rem; font-weight: 600;">
+                                <span style="color: var(--accent);">🏷️ ${item.category}</span>
+                                <span style="color: var(--text-muted); margin-left: 15px;">📅 ${item.date}</span>
+                            </div>
                         </div>
                     </article>
                 `;
@@ -164,13 +165,13 @@
 
         function closeModal() { document.getElementById('newsModal').style.display = 'none'; }
 
-        // --- СЕРВЕРА (ОБНОВЛЕННЫЙ API + ВЕРНУЛ ОПИСАНИЯ) ---
+        // Сервера
         const servers = [
-            { ip: 'mc.hypixel.net', name: 'Hypixel', desc: 'Легенда мини-игр. BedWars, SkyBlock и турниры.' },
-            { ip: 'play.wynncraft.com', name: 'Wynncraft', desc: 'Огромная MMORPG прямо в Майнкрафте. Квесты и магия.' },
-            { ip: 'play.funtime.su', name: 'FunTime', desc: 'Топ анархия в СНГ! Гриферство, кланы, аукционы.' },
-            { ip: 'mc.reallyworld.ru', name: 'ReallyWorld', desc: 'Жесткое выживание и PvP турниры.' },
-            { ip: 'play.cubecraft.net', name: 'CubeCraft', desc: 'Топовые режимы для игры с друзьями: EggWars и PvP.' }
+            { ip: 'mc.hypixel.net', name: 'Hypixel', desc: 'Лучший сервер мини-игр в мире.' },
+            { ip: 'play.wynncraft.com', name: 'Wynncraft', desc: 'Масштабная RPG прямо в Minecraft.' },
+            { ip: 'play.funtime.su', name: 'FunTime', desc: 'Анархия, PvP и море фана.' },
+            { ip: 'mc.reallyworld.ru', name: 'ReallyWorld', desc: 'Выживание от Домера.' },
+            { ip: 'play.cubecraft.net', name: 'CubeCraft', desc: 'Старая добрая классика мини-игр.' }
         ];
 
         async function loadServers() {
@@ -181,19 +182,18 @@
                     const res = await fetch(`https://api.mcstatus.io/v2/status/java/${s.ip}`);
                     const data = await res.json();
                     const online = data.online ? `${data.players.online.toLocaleString()} 🟢` : 'Offline 🔴';
-                    // ИСПРАВЛЕНИЕ: Вернул всплывающее окошко сервера
                     sList.innerHTML += `
                         <div class="server-item">
                             <span>${s.name}</span>
                             <span style="color:var(--accent)">${online}</span>
                             <div class="server-tooltip">
-                                <strong style="color: var(--accent); font-size: 1.1rem;">${s.name}</strong><br>
-                                <span style="font-size: 0.85rem; color: #ddd; display: block; margin-top: 5px;">${s.desc}</span>
+                                <strong style="color: var(--accent);">${s.name}</strong><br>
+                                <span style="font-size: 0.8rem; color: #bbb;">${s.desc}</span>
                                 <div class="server-ip-box">${s.ip}</div>
                             </div>
                         </div>`;
                 } catch {
-                    sList.innerHTML += `<div class="server-item"><span>${s.name}</span><span style="color:gray">Ошибка 🔴</span></div>`;
+                    sList.innerHTML += `<div class="server-item"><span>${s.name}</span><span style="color:gray">Error 🔴</span></div>`;
                 }
             }
         }
