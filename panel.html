@@ -3,90 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINE-BASE | Игровая Панель</title>
+    <title>MINE-BASE | Панель v1.0.02</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Специфические стили для панели */
+        /* Дополнительные стили для интерактива Build 02 */
         .panel-grid {
             display: grid;
-            grid-template-columns: 300px 1fr 300px;
+            grid-template-columns: 350px 1fr 350px;
             gap: 20px;
             padding: 20px;
-            max-width: 1600px;
+            max-width: 1700px;
             margin: 0 auto;
         }
 
         .version-info {
+            display: flex;
+            align-items: baseline;
             margin-bottom: 20px;
             border-bottom: 2px solid var(--accent);
             padding-bottom: 10px;
         }
         .v-main { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
-        .v-sub { font-size: 1rem; color: var(--text-muted); margin-left: 10px; }
+        .v-sub { font-size: 0.8rem; color: var(--text-muted); margin-left: 10px; text-transform: uppercase; }
 
-        /* Заметки */
+        /* Интерактивные заметки */
         .notes-area {
             background: var(--card-bg);
             border-radius: var(--radius);
             padding: 25px;
             border: 2px solid var(--border);
-            min-height: 600px;
+            min-height: 750px;
+            display: flex;
+            flex-direction: column;
         }
-        .note-input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         .note-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 12px;
+            padding: 15px;
             background: #252525;
             margin-bottom: 10px;
-            border-radius: 6px;
-            border-left: 4px solid var(--accent);
-        }
-        .note-circle {
-            width: 22px;
-            height: 22px;
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .note-item.done .note-circle { background: var(--accent); }
-        .note-item.done span { text-decoration: line-through; color: var(--text-muted); }
-
-        /* Команды */
-        .cmd-list { list-style: none; padding: 0; }
-        .cmd-item {
-            background: #111;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            font-size: 0.85rem;
-        }
-        .cmd-code { color: var(--accent); font-family: monospace; display: block; margin-bottom: 5px; }
-
-        /* Покраска брони */
-        .armor-preview {
-            width: 60px;
-            height: 60px;
-            background: #8b4513; /* Цвет кожи по дефолту */
-            margin: 10px auto;
             border-radius: 8px;
-            border: 2px solid #fff;
+            transition: 0.3s;
+            border-left: 4px solid var(--accent);
+            animation: fadeIn 0.3s ease;
         }
-
-        details summary {
+        .note-item:hover { transform: scale(1.01); background: #2d2d2d; }
+        .note-text { flex-grow: 1; margin: 0 15px; font-weight: 600; }
+        .btn-del {
+            background: #ff5555;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            padding: 10px;
+            font-weight: bold;
+        }
+        .btn-del:hover { background: #ff0000; }
+
+        /* Armor Dye 2.0 */
+        .dye-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #111;
+            border-radius: 8px;
+            border: 1px dashed var(--accent);
+        }
+        .similarity-bar {
+            height: 8px;
             background: #333;
             border-radius: 4px;
-            font-weight: bold;
-            list-style: none;
-            margin-bottom: 5px;
+            margin-top: 5px;
+            overflow: hidden;
         }
-        details summary:hover { color: var(--accent); }
+        .similarity-fill { height: 100%; background: var(--accent); transition: 0.5s; }
+
+        /* Еда */
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+        }
+        .food-item:hover { background: #333; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -98,7 +100,7 @@
         </div>
         <nav>
             <a href="index.html">Главная</a>
-            <a href="panel.html" class="btn-panel" style="border: 2px solid #fff;">Панель v1.0</a>
+            <a href="panel.html" class="btn-panel" style="border: 1px solid #fff;">Панель v1.0.02</a>
         </nav>
     </header>
 
@@ -107,117 +109,185 @@
         <aside>
             <div class="version-info">
                 <span class="v-main">V 1.0</span>
-                <span class="v-sub">alpha 1.0 build 01</span>
+                <span class="v-sub">alpha 1.0 build 02</span>
             </div>
 
             <div class="sidebar-block">
-                <h3 style="color: var(--accent); margin-top: 0;">🛠 ИНСТРУМЕНТЫ</h3>
-                
-                <details>
+                <h3 style="color: var(--accent); margin-top: 0;">🧭 НАВИГАЦИЯ</h3>
+                <details open>
                     <summary>🌌 ПОРТАЛ / КООРДИНАТЫ</summary>
-                    <div style="padding: 10px; background: #222; border-radius: 4px;">
-                        <label style="font-size: 0.8rem;">Верхний мир (X, Z):</label>
-                        <input type="number" id="overworldInp" class="calc-input" placeholder="Координата..." oninput="calcCoords('over')">
-                        <label style="font-size: 0.8rem;">Незер (X, Z):</label>
-                        <input type="number" id="netherInp" class="calc-input" placeholder="Координата..." oninput="calcCoords('neth')">
+                    <div style="padding: 10px;">
+                        <input type="number" id="overworldInp" class="calc-input" placeholder="Мир (X / Z)" oninput="calcCoords('over')">
+                        <div style="text-align: center; color: var(--accent); font-weight: bold;">↕ 8:1 ↕</div>
+                        <input type="number" id="netherInp" class="calc-input" placeholder="Незер (X / Z)" oninput="calcCoords('neth')">
                     </div>
                 </details>
 
-                <details style="margin-top: 10px;">
-                    <summary>🎨 ПОКРАСКА БРОНИ</summary>
-                    <div style="padding: 10px; background: #222; border-radius: 4px; text-align: center;">
-                        <p style="font-size: 0.8rem; margin-top:0;">Выбери цвет куртки:</p>
-                        <input type="color" id="armorColor" value="#8b4513" oninput="updateArmor(this.value)" style="width:100%; height:40px; cursor:pointer;">
-                        <div id="armorView" class="armor-preview"></div>
-                        <small id="hexCode">#8B4513</small>
+                <details style="margin-top: 15px;">
+                    <summary>🎨 КРАСКА БРОНИ (DYE 2.0)</summary>
+                    <div style="padding: 10px; text-align: center;">
+                        <input type="color" id="dyePicker" class="calc-input" style="height: 50px; cursor: pointer;" oninput="processDye(this.value)">
+                        <div id="dyeOutput" class="dye-result">
+                            <span style="font-size: 0.8rem; color: #aaa;">Выбери цвет для крафта</span>
+                        </div>
                     </div>
+                </details>
+
+                <details style="margin-top: 15px;">
+                    <summary>🍎 СЫТОСТЬ (FOOD STATS)</summary>
+                    <div style="padding: 10px; max-height: 200px; overflow-y: auto; background: #111; border-radius: 4px;" id="foodList">
+                        </div>
                 </details>
             </div>
         </aside>
 
         <main class="notes-area">
-            <h2 style="color: var(--accent); margin-top: 0;">📝 ПЛАН ПРИКЛЮЧЕНИЙ</h2>
-            <div class="note-input-group">
-                <input type="text" id="noteInput" class="calc-input" style="margin:0;" placeholder="Что нужно сделать? (например: Добыть 10 алмазов)">
-                <button class="tool-btn" style="margin:0; width: auto; padding: 0 20px;" onclick="addNote()">➕</button>
+            <h2 style="color: var(--accent); margin-top: 0;">📒 МОИ ЗАМЕТКИ</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="noteInput" class="calc-input" style="margin: 0;" placeholder="Добавить задачу...">
+                <button class="tool-btn" style="margin: 0; width: auto; padding: 0 25px;" onclick="addNote()">ДОБАВИТЬ</button>
             </div>
-            <div id="notesList">
-                <div class="note-item">
-                    <div class="note-circle" onclick="toggleNote(this)"></div>
-                    <span>Построить автоматическую ферму тростника</span>
+            <div id="notesContainer">
                 </div>
+            <div style="margin-top: auto; color: gray; font-size: 0.8rem; text-align: center;">
+                Заметки сохраняются только на время сессии
             </div>
         </main>
 
         <aside>
             <div class="sidebar-block">
-                <h3 style="color: var(--accent); margin-top: 0;">📜 БЫСТРЫЕ КОМАНДЫ</h3>
-                <div class="cmd-list">
-                    <div class="cmd-item">
-                        <span class="cmd-code">/gamemode creative</span>
-                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/gamemode creative')">КОПИРОВАТЬ</button>
+                <h3 style="color: var(--accent); margin-top: 0;">📜 WIKI КОМАНД</h3>
+                <input type="text" id="cmdSearch" class="calc-input" placeholder="Поиск команды..." oninput="filterCmds()">
+                <div id="cmdContainer" style="max-height: 600px; overflow-y: auto;">
                     </div>
-                    <div class="cmd-item">
-                        <span class="cmd-code">/locate structure fortress</span>
-                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/locate structure fortress')">КОПИРОВАТЬ</button>
-                    </div>
-                    <div class="cmd-item">
-                        <span class="cmd-code">/gamerule keepInventory true</span>
-                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/gamerule keepInventory true')">КОПИРОВАТЬ</button>
-                    </div>
-                    <div class="cmd-item">
-                        <span class="cmd-code">/weather clear</span>
-                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/weather clear')">КОПИРОВАТЬ</button>
-                    </div>
-                </div>
             </div>
         </aside>
 
     </div>
 
     <script>
-        // Координаты
+        // --- ДАННЫЕ ЕДЫ ---
+        const foodData = [
+            { name: "Золотое яблоко", hunger: 4, sat: 9.6 },
+            { name: "Стейк", hunger: 8, sat: 12.8 },
+            { name: "Жареная курица", hunger: 6, sat: 7.2 },
+            { name: "Золотая морковь", hunger: 6, sat: 14.4 },
+            { name: "Хлеб", hunger: 5, sat: 6.0 },
+            { name: "Гнилая плоть", hunger: 4, sat: 0.8 }
+        ];
+
+        function loadFood() {
+            const container = document.getElementById('foodList');
+            foodData.forEach(f => {
+                container.innerHTML += `
+                    <div class="food-item" onclick="alert('${f.name}: +${f.hunger/2} ед. голода и ${f.sat} насыщения')">
+                        <span>${f.name}</span>
+                        <span style="color:var(--accent)">🍗 x${f.hunger/2}</span>
+                    </div>`;
+            });
+        }
+
+        // --- КООРДИНАТЫ ---
         function calcCoords(type) {
-            const over = document.getElementById('overworldInp');
-            const neth = document.getElementById('netherInp');
-            if(type === 'over') {
-                neth.value = Math.floor(over.value / 8);
-            } else {
-                over.value = neth.value * 8;
-            }
+            const o = document.getElementById('overworldInp');
+            const n = document.getElementById('netherInp');
+            if(type === 'over') n.value = (o.value / 8).toFixed(1);
+            else o.value = (n.value * 8).toFixed(1);
         }
 
-        // Покраска
-        function updateArmor(color) {
-            document.getElementById('armorView').style.background = color;
-            document.getElementById('hexCode').innerText = color.toUpperCase();
-        }
+        // --- АЛГОРИТМ КРАСКИ БРОНИ ---
+        const mcDyes = [
+            { name: "Красный", hex: "#b02e26", item: "Red Dye" },
+            { name: "Зеленый", hex: "#5e7c16", item: "Green Dye" },
+            { name: "Синий", hex: "#3c44aa", item: "Blue Dye" },
+            { name: "Желтый", hex: "#fed83d", item: "Yellow Dye" },
+            { name: "Белый", hex: "#f9fffe", item: "White Dye" },
+            { name: "Черный", hex: "#1d1d21", item: "Black Dye" }
+        ];
 
-        // Заметки
-        function addNote() {
-            const input = document.getElementById('noteInput');
-            if(!input.value) return;
+        function processDye(userHex) {
+            let bestMatch = mcDyes[0];
+            let minDiff = Infinity;
+
+            // Простая формула схожести цветов
+            mcDyes.forEach(dye => {
+                let diff = colorDistance(userHex, dye.hex);
+                if(diff < minDiff) { minDiff = diff; bestMatch = dye; }
+            });
+
+            const similarity = Math.max(0, 100 - (minDiff / 10)).toFixed(0);
             
-            const list = document.getElementById('notesList');
-            const div = document.createElement('div');
-            div.className = 'note-item';
-            div.innerHTML = `
-                <div class="note-circle" onclick="toggleNote(this)"></div>
-                <span>${input.value}</span>
+            document.getElementById('dyeOutput').innerHTML = `
+                <div style="font-weight:bold; color:${bestMatch.hex}">${bestMatch.name}</div>
+                <div style="font-size:0.8rem; margin:5px 0;">Рецепт: Кожа + ${bestMatch.item}</div>
+                <div style="font-size:0.7rem;">Схожесть: ${similarity}%</div>
+                <div class="similarity-bar"><div class="similarity-fill" style="width:${similarity}%"></div></div>
             `;
-            list.prepend(div);
-            input.value = '';
         }
 
-        function toggleNote(circle) {
-            circle.parentElement.classList.toggle('done');
+        function colorDistance(hex1, hex2) {
+            const r1 = parseInt(hex1.substr(1,2), 16);
+            const g1 = parseInt(hex1.substr(3,2), 16);
+            const b1 = parseInt(hex1.substr(5,2), 16);
+            const r2 = parseInt(hex2.substr(1,2), 16);
+            const g2 = parseInt(hex2.substr(3,2), 16);
+            const b2 = parseInt(hex2.substr(5,2), 16);
+            return Math.sqrt((r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2);
         }
 
-        // Копирование
-        function copyTxt(text) {
-            navigator.clipboard.writeText(text);
-            alert("Скопировано: " + text);
+        // --- ЗАМЕТКИ ---
+        function addNote() {
+            const inp = document.getElementById('noteInput');
+            if(!inp.value.trim()) return;
+            
+            const container = document.getElementById('notesContainer');
+            const note = document.createElement('div');
+            note.className = 'note-item';
+            note.innerHTML = `
+                <div class="note-circle" onclick="this.parentElement.classList.toggle('done')"></div>
+                <span class="note-text">${inp.value}</span>
+                <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.prepend(note);
+            inp.value = '';
         }
+
+        // --- КОМАНДЫ ---
+        const commands = [
+            { code: "/tp @s ~ ~ ~", desc: "Телепортация в координаты" },
+            { code: "/gamemode survival", desc: "Смена режима на Выживание" },
+            { code: "/give @p diamond 64", desc: "Выдать стак алмазов игроку" },
+            { code: "/locate structure", desc: "Найти ближайшую структуру" },
+            { code: "/fill ~ ~ ~ ~ ~ ~ stone", desc: "Заполнить область блоками" },
+            { code: "/gamerule doDaylightCycle false", desc: "Остановить время" },
+            { code: "/clear", desc: "Очистить свой инвентарь" },
+            { code: "/time set day", desc: "Установить день" }
+        ];
+
+        function filterCmds() {
+            const q = document.getElementById('cmdSearch').value.toLowerCase();
+            const container = document.getElementById('cmdContainer');
+            container.innerHTML = '';
+            
+            commands.filter(c => c.code.includes(q) || c.desc.toLowerCase().includes(q)).forEach(c => {
+                container.innerHTML += `
+                    <div class="cmd-item">
+                        <span class="cmd-code">${c.code}</span>
+                        <div style="font-size:0.75rem; color:gray; margin-bottom:8px;">${c.desc}</div>
+                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('${c.code}')">КОПИРОВАТЬ</button>
+                    </div>`;
+            });
+        }
+
+        function copyTxt(t) {
+            navigator.clipboard.writeText(t);
+            alert("Скопировано: " + t);
+        }
+
+        window.onload = () => {
+            loadFood();
+            filterCmds();
+        };
     </script>
 </body>
 </html>
