@@ -7,93 +7,217 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        body { background: #0a0a0a !important; height: 100vh; overflow: hidden; }
-        .grid-panel {
+        /* Специфические стили для панели */
+        .panel-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            padding: 15px;
-            height: 90vh;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
         }
-        .col { 
-            background: #151515; 
-            border: 2px solid #333; 
-            padding: 20px; 
-            border-radius: 12px; 
+
+        .version-info {
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+        .v-main { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
+        .v-sub { font-size: 1rem; color: var(--text-muted); margin-left: 10px; }
+
+        /* Заметки */
+        .notes-area {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 2px solid var(--border);
+            min-height: 600px;
+        }
+        .note-input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .note-item {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: #252525;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent);
         }
-        .calc-input {
-            width: 80%;
-            padding: 10px;
-            background: #222;
-            border: 1px solid var(--accent);
-            color: white;
-            margin: 5px 0;
+        .note-circle {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .note-item.done .note-circle { background: var(--accent); }
+        .note-item.done span { text-decoration: line-through; color: var(--text-muted); }
+
+        /* Команды */
+        .cmd-list { list-style: none; padding: 0; }
+        .cmd-item {
+            background: #111;
+            padding: 12px;
+            margin-bottom: 10px;
             border-radius: 4px;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
         }
-        h2 { color: var(--accent); margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        .cmd-code { color: var(--accent); font-family: monospace; display: block; margin-bottom: 5px; }
+
+        /* Покраска брони */
+        .armor-preview {
+            width: 60px;
+            height: 60px;
+            background: #8b4513; /* Цвет кожи по дефолту */
+            margin: 10px auto;
+            border-radius: 8px;
+            border: 2px solid #fff;
+        }
+
+        details summary {
+            cursor: pointer;
+            padding: 10px;
+            background: #333;
+            border-radius: 4px;
+            font-weight: bold;
+            list-style: none;
+            margin-bottom: 5px;
+        }
+        details summary:hover { color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div style="padding: 10px 20px; background: #1b5e20; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="logo.png" style="height: 30px;">
-            <b style="color: white;">MINE-BASE PANEL (V 1.0)</b>
+    <header>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="logo.png" alt="Logo" style="height: 50px;">
+            <div class="logo">MINE-BASE</div>
         </div>
-        <a href="index.html" style="color: white; font-weight: bold;">← ВЕРНУТЬСЯ НА САЙТ</a>
-    </div>
+        <nav>
+            <a href="index.html">Главная</a>
+            <a href="panel.html" class="btn-panel" style="border: 2px solid #fff;">Панель v1.0</a>
+        </nav>
+    </header>
 
-    <div class="grid-panel">
-        <div class="col">
-            <h2>🧭 Координаты ада</h2>
-            <p style="font-size: 0.8rem; color: #888;">Введи координаты в Обычном мире:</p>
-            <input type="number" id="overX" class="calc-input" placeholder="Координата X">
-            <input type="number" id="overZ" class="calc-input" placeholder="Координата Z">
-            <div style="margin-top: 20px; padding: 15px; background: #222; border-radius: 8px;">
-                <p style="margin:0; color: #888;">В аду строить тут:</p>
-                <h3 id="netherRes" style="margin: 5px 0; color: var(--panel-btn);">X: 0 | Z: 0</h3>
+    <div class="panel-grid">
+        
+        <aside>
+            <div class="version-info">
+                <span class="v-main">V 1.0</span>
+                <span class="v-sub">alpha 1.0 build 01</span>
             </div>
-        </div>
 
-        <div class="col">
-            <h2>📝 Заметки</h2>
-            <textarea style="flex-grow: 1; background: transparent; color: #ddd; border: 1px dashed #444; padding: 10px; resize: none; outline: none;" placeholder="Напиши тут список ресурсов или координаты базы..."></textarea>
-        </div>
+            <div class="sidebar-block">
+                <h3 style="color: var(--accent); margin-top: 0;">🛠 ИНСТРУМЕНТЫ</h3>
+                
+                <details>
+                    <summary>🌌 ПОРТАЛ / КООРДИНАТЫ</summary>
+                    <div style="padding: 10px; background: #222; border-radius: 4px;">
+                        <label style="font-size: 0.8rem;">Верхний мир (X, Z):</label>
+                        <input type="number" id="overworldInp" class="calc-input" placeholder="Координата..." oninput="calcCoords('over')">
+                        <label style="font-size: 0.8rem;">Незер (X, Z):</label>
+                        <input type="number" id="netherInp" class="calc-input" placeholder="Координата..." oninput="calcCoords('neth')">
+                    </div>
+                </details>
 
-        <div class="col">
-            <h2>⌨️ Команды</h2>
-            <div class="tool-btn" onclick="copyToClipboard('/gamerule keepInventory true')">Сохранение вещей</div>
-            <div class="tool-btn" onclick="copyToClipboard('/locate structure village')">Найти деревню</div>
-            <div class="tool-btn" onclick="copyToClipboard('/gamemode creative')">Креатив</div>
-            <p id="copyStatus" style="text-align: center; color: var(--accent); font-size: 0.8rem; margin-top: 10px; display: none;">Скопировано!</p>
-        </div>
+                <details style="margin-top: 10px;">
+                    <summary>🎨 ПОКРАСКА БРОНИ</summary>
+                    <div style="padding: 10px; background: #222; border-radius: 4px; text-align: center;">
+                        <p style="font-size: 0.8rem; margin-top:0;">Выбери цвет куртки:</p>
+                        <input type="color" id="armorColor" value="#8b4513" oninput="updateArmor(this.value)" style="width:100%; height:40px; cursor:pointer;">
+                        <div id="armorView" class="armor-preview"></div>
+                        <small id="hexCode">#8B4513</small>
+                    </div>
+                </details>
+            </div>
+        </aside>
+
+        <main class="notes-area">
+            <h2 style="color: var(--accent); margin-top: 0;">📝 ПЛАН ПРИКЛЮЧЕНИЙ</h2>
+            <div class="note-input-group">
+                <input type="text" id="noteInput" class="calc-input" style="margin:0;" placeholder="Что нужно сделать? (например: Добыть 10 алмазов)">
+                <button class="tool-btn" style="margin:0; width: auto; padding: 0 20px;" onclick="addNote()">➕</button>
+            </div>
+            <div id="notesList">
+                <div class="note-item">
+                    <div class="note-circle" onclick="toggleNote(this)"></div>
+                    <span>Построить автоматическую ферму тростника</span>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="sidebar-block">
+                <h3 style="color: var(--accent); margin-top: 0;">📜 БЫСТРЫЕ КОМАНДЫ</h3>
+                <div class="cmd-list">
+                    <div class="cmd-item">
+                        <span class="cmd-code">/gamemode creative</span>
+                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/gamemode creative')">КОПИРОВАТЬ</button>
+                    </div>
+                    <div class="cmd-item">
+                        <span class="cmd-code">/locate structure fortress</span>
+                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/locate structure fortress')">КОПИРОВАТЬ</button>
+                    </div>
+                    <div class="cmd-item">
+                        <span class="cmd-code">/gamerule keepInventory true</span>
+                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/gamerule keepInventory true')">КОПИРОВАТЬ</button>
+                    </div>
+                    <div class="cmd-item">
+                        <span class="cmd-code">/weather clear</span>
+                        <button class="tool-btn" style="padding:5px; font-size:0.7rem;" onclick="copyTxt('/weather clear')">КОПИРОВАТЬ</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
     </div>
 
     <script>
-        // Логика калькулятора
-        const ox = document.getElementById('overX');
-        const oz = document.getElementById('overZ');
-        const res = document.getElementById('netherRes');
-
-        function updateCalc() {
-            const x = Math.round(ox.value / 8) || 0;
-            const z = Math.round(oz.value / 8) || 0;
-            res.innerText = `X: ${x} | Z: ${z}`;
+        // Координаты
+        function calcCoords(type) {
+            const over = document.getElementById('overworldInp');
+            const neth = document.getElementById('netherInp');
+            if(type === 'over') {
+                neth.value = Math.floor(over.value / 8);
+            } else {
+                over.value = neth.value * 8;
+            }
         }
 
-        ox.addEventListener('input', updateCalc);
-        oz.addEventListener('input', updateCalc);
+        // Покраска
+        function updateArmor(color) {
+            document.getElementById('armorView').style.background = color;
+            document.getElementById('hexCode').innerText = color.toUpperCase();
+        }
 
-        // Функция копирования
-        function copyToClipboard(text) {
+        // Заметки
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            if(!input.value) return;
+            
+            const list = document.getElementById('notesList');
+            const div = document.createElement('div');
+            div.className = 'note-item';
+            div.innerHTML = `
+                <div class="note-circle" onclick="toggleNote(this)"></div>
+                <span>${input.value}</span>
+            `;
+            list.prepend(div);
+            input.value = '';
+        }
+
+        function toggleNote(circle) {
+            circle.parentElement.classList.toggle('done');
+        }
+
+        // Копирование
+        function copyTxt(text) {
             navigator.clipboard.writeText(text);
-            const status = document.getElementById('copyStatus');
-            status.style.display = 'block';
-            setTimeout(() => status.style.display = 'none', 2000);
+            alert("Скопировано: " + text);
         }
     </script>
-
 </body>
 </html>
