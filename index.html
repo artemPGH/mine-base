@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINE-BASE | v2.0</title>
+    <title>MINE-BASE | Лучшая База Знаний</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <div class="logo">MINE-BASE</div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="logo.png" alt="Logo" style="height: 50px;">
+            <div class="logo">MINE-BASE</div>
+        </div>
         <nav>
             <a href="index.html">Главная</a>
             <a href="panel.html" class="btn-panel">Игровая Панель 📺</a>
@@ -21,10 +25,10 @@
             <h1>БАЗА ЗНАНИЙ MINE-BASE 🏅</h1>
             <div class="search-wrapper">
                 <select id="categoryFilter" class="filter-select">
-                    <option value="all">Все категории</option>
-                    <option value="Обновления">Новости</option>
-                    <option value="Моды">Моды</option>
-                    <option value="Гайды">Гайды</option>
+                    <option value="all">📁 Все категории</option>
+                    <option value="Обновления">📢 Новости</option>
+                    <option value="Моды">🧩 Моды</option>
+                    <option value="Гайды">📚 Гайды</option>
                 </select>
                 <input type="text" id="searchInput" class="search-box" placeholder="Найти мод или гайд...">
             </div>
@@ -160,13 +164,13 @@
 
         function closeModal() { document.getElementById('newsModal').style.display = 'none'; }
 
-        // --- СЕРВЕРА (ОБНОВЛЕННЫЙ API) ---
+        // --- СЕРВЕРА (ОБНОВЛЕННЫЙ API + ВЕРНУЛ ОПИСАНИЯ) ---
         const servers = [
-            { ip: 'mc.hypixel.net', name: 'Hypixel' },
-            { ip: 'play.wynncraft.com', name: 'Wynncraft' },
-            { ip: 'play.funtime.su', name: 'FunTime' },
-            { ip: 'mc.reallyworld.ru', name: 'ReallyWorld' },
-            { ip: 'play.cubecraft.net', name: 'CubeCraft' }
+            { ip: 'mc.hypixel.net', name: 'Hypixel', desc: 'Легенда мини-игр. BedWars, SkyBlock и турниры.' },
+            { ip: 'play.wynncraft.com', name: 'Wynncraft', desc: 'Огромная MMORPG прямо в Майнкрафте. Квесты и магия.' },
+            { ip: 'play.funtime.su', name: 'FunTime', desc: 'Топ анархия в СНГ! Гриферство, кланы, аукционы.' },
+            { ip: 'mc.reallyworld.ru', name: 'ReallyWorld', desc: 'Жесткое выживание и PvP турниры.' },
+            { ip: 'play.cubecraft.net', name: 'CubeCraft', desc: 'Топовые режимы для игры с друзьями: EggWars и PvP.' }
         ];
 
         async function loadServers() {
@@ -174,11 +178,20 @@
             sList.innerHTML = '';
             for (let s of servers) {
                 try {
-                    // Используем API mcstatus.io (самый точный на данный момент)
                     const res = await fetch(`https://api.mcstatus.io/v2/status/java/${s.ip}`);
                     const data = await res.json();
                     const online = data.online ? `${data.players.online.toLocaleString()} 🟢` : 'Offline 🔴';
-                    sList.innerHTML += `<div class="server-item"><span>${s.name}</span><span style="color:var(--accent)">${online}</span></div>`;
+                    // ИСПРАВЛЕНИЕ: Вернул всплывающее окошко сервера
+                    sList.innerHTML += `
+                        <div class="server-item">
+                            <span>${s.name}</span>
+                            <span style="color:var(--accent)">${online}</span>
+                            <div class="server-tooltip">
+                                <strong style="color: var(--accent); font-size: 1.1rem;">${s.name}</strong><br>
+                                <span style="font-size: 0.85rem; color: #ddd; display: block; margin-top: 5px;">${s.desc}</span>
+                                <div class="server-ip-box">${s.ip}</div>
+                            </div>
+                        </div>`;
                 } catch {
                     sList.innerHTML += `<div class="server-item"><span>${s.name}</span><span style="color:gray">Ошибка 🔴</span></div>`;
                 }
