@@ -11,7 +11,7 @@
 
     <header>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <img src="logo.png" alt="Logo" style="height: 50px;" onerror="this.src='https://via.placeholder.com/50?text=MB'">
+            <img src="logo.png" alt="Logo" style="height: 50px;">
             <div class="logo">MINE-BASE</div>
         </div>
         <nav>
@@ -67,52 +67,96 @@
         <div class="modal-content">
             <span style="float:right; cursor:pointer; font-size:28px; color:white;" onclick="closeCmdModal()">&times;</span>
             <h2 style="color: var(--accent); margin-top:0;">ГЕНЕРАТОР /GIVE</h2>
-            <label>Получатель:</label>
+            
+            <label style="font-size: 0.9rem;">Получатель:</label>
             <select id="cmdTarget" class="calc-input" onchange="updateCmd()">
                 <option value="@s">Себе (@s)</option>
                 <option value="@p">Ближайшему (@p)</option>
                 <option value="@a">Всем (@a)</option>
             </select>
-            <label>Предмет:</label>
+
+            <label style="font-size: 0.9rem;">Предмет (английский):</label>
             <div style="position:relative;">
-                <input type="text" id="itemSearch" class="calc-input" placeholder="diamond..." oninput="filterItems()">
+                <input type="text" id="itemSearch" class="calc-input" placeholder="Начни писать: diamond..." oninput="filterItems()">
                 <div id="itemResults" class="item-search-results"></div>
             </div>
-            <label>Количество:</label>
+
+            <label style="font-size: 0.9rem;">Количество:</label>
             <input type="number" id="cmdCount" class="calc-input" value="1" min="1" oninput="updateCmd()">
-            <div id="cmdResult" style="background:#000; padding:15px; color:var(--accent); font-family:monospace; border: 1px solid #333; margin-bottom:10px;">/give @s stone 1</div>
-            <button class="tool-btn" onclick="copyCommand()">СКОПИРОВАТЬ</button>
+
+            <div style="background:#000; padding:15px; border-radius:4px; color:var(--accent); font-family:monospace; font-weight:bold; margin-bottom:15px; border: 1px solid #333;" id="cmdResult">
+                /give @s minecraft:stone 1
+            </div>
+            <button class="tool-btn" onclick="copyCommand()">СКОПИРОВАТЬ КОМАНДУ</button>
         </div>
     </div>
 
     <script src="news-data.js"></script>
     <script>
-        // ИСПРАВЛЕННАЯ ЛОГИКА НОВОСТЕЙ
+        const mcItems = ["stone", "grass_block", "dirt", "cobblestone", "oak_planks", "bedrock", "water_bucket", "lava_bucket", "sand", "gravel", "gold_ore", "iron_ore", "coal_ore", "diamond_ore", "lapis_ore", "emerald_ore", "obsidian", "torch", "diamond_block", "iron_block", "gold_block", "emerald_block", "tnt", "bookshelf", "diamond_sword", "iron_sword", "golden_apple", "elytra", "trident", "netherite_ingot", "netherite_sword", "ender_pearl", "experience_bottle", "totem_of_undying"];
+        let selectedItem = "stone";
+
+        // Генератор
+        function filterItems() {
+            const input = document.getElementById('itemSearch').value.toLowerCase();
+            const results = document.getElementById('itemResults');
+            results.innerHTML = '';
+            if (input.length < 1) { results.style.display = 'none'; return; }
+            const filtered = mcItems.filter(i => i.includes(input));
+            if (filtered.length > 0) {
+                results.style.display = 'block';
+                filtered.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item-option';
+                    div.innerText = item.replace('_', ' ');
+                    div.onclick = () => {
+                        selectedItem = item;
+                        document.getElementById('itemSearch').value = item;
+                        results.style.display = 'none';
+                        updateCmd();
+                    };
+                    results.appendChild(div);
+                });
+            } else { results.style.display = 'none'; }
+        }
+
+        function updateCmd() {
+            const target = document.getElementById('cmdTarget').value;
+            const count = document.getElementById('cmdCount').value || 1;
+            document.getElementById('cmdResult').innerText = `/give ${target} minecraft:${selectedItem} ${count}`;
+        }
+
+        function copyCommand() {
+            navigator.clipboard.writeText(document.getElementById('cmdResult').innerText);
+            alert("Команда скопирована!");
+        }
+
+        function openCmdModal() { document.getElementById('cmdModal').style.display = 'block'; }
+        function closeCmdModal() { document.getElementById('cmdModal').style.display = 'none'; }
+
+        // Новости
         const container = document.getElementById('news-container');
-        
         function displayNews(data) {
             container.innerHTML = '';
-            data.forEach((item) => {
-                // Находим оригинальный индекс в newsList, чтобы модалка открывала ПРАВИЛЬНУЮ новость
-                const originalIndex = newsList.findIndex(n => n.title === item.title);
+            data.forEach((item, index) => {
                 container.innerHTML += `
-                    <article class="news-card" onclick="openFullNews(${originalIndex})">
+                    <article class="news-card" onclick="openFullNews(${index})">
                         <img src="${item.image}">
                         <div class="news-content">
                             <h2 style="color:var(--accent)">${item.title}</h2>
                             <p>${item.description}</p>
-                            <div style="margin-top: 15px; font-size: 0.85rem;">
+                            <div style="margin-top: 15px; font-size: 0.85rem; font-weight: 600;">
                                 <span style="color: var(--accent);">🏷️ ${item.category}</span>
                                 <span style="color: var(--text-muted); margin-left: 15px;">📅 ${item.date}</span>
                             </div>
                         </div>
-                    </article>`;
+                    </article>
+                `;
             });
         }
 
         function openFullNews(idx) {
             const n = newsList[idx];
-            if(!n) return;
             document.getElementById('modalImg').src = n.image;
             document.getElementById('modalTitle').innerText = n.title;
             document.getElementById('modalText').innerText = n.fullText;
@@ -121,7 +165,41 @@
 
         function closeModal() { document.getElementById('newsModal').style.display = 'none'; }
 
-        // Поиск и фильтры
+        // Сервера
+        const servers = [
+            { ip: 'mc.hypixel.net', name: 'Hypixel', desc: 'Лучший сервер мини-игр в мире.' },
+            { ip: 'play.wynncraft.com', name: 'Wynncraft', desc: 'Масштабная RPG прямо в Minecraft.' },
+            { ip: 'play.funtime.su', name: 'FunTime', desc: 'Анархия, PvP и море фана.' },
+            { ip: 'mc.reallyworld.ru', name: 'ReallyWorld', desc: 'Выживание от Домера.' },
+            { ip: 'play.cubecraft.net', name: 'CubeCraft', desc: 'Старая добрая классика мини-игр.' }
+        ];
+
+        async function loadServers() {
+            const sList = document.getElementById('server-list');
+            sList.innerHTML = '';
+            for (let s of servers) {
+                try {
+                    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${s.ip}`);
+                    const data = await res.json();
+                    const online = data.online ? `${data.players.online.toLocaleString()} 🟢` : 'Offline 🔴';
+                    sList.innerHTML += `
+                        <div class="server-item">
+                            <span>${s.name}</span>
+                            <span style="color:var(--accent)">${online}</span>
+                            <div class="server-tooltip">
+                                <strong style="color: var(--accent);">${s.name}</strong><br>
+                                <span style="font-size: 0.8rem; color: #bbb;">${s.desc}</span>
+                                <div class="server-ip-box">${s.ip}</div>
+                            </div>
+                        </div>`;
+                } catch {
+                    sList.innerHTML += `<div class="server-item"><span>${s.name}</span><span style="color:gray">Error 🔴</span></div>`;
+                }
+            }
+        }
+
+        window.onload = () => { displayNews(newsList); loadServers(); };
+        
         document.getElementById('categoryFilter').addEventListener('change', (e) => {
             const filtered = e.target.value === 'all' ? newsList : newsList.filter(n => n.category === e.target.value);
             displayNews(filtered);
@@ -132,47 +210,6 @@
             const filtered = newsList.filter(n => n.title.toLowerCase().includes(val) || n.description.toLowerCase().includes(val));
             displayNews(filtered);
         });
-
-        // Остальная логика (Сервера и Give) сохранена из твоего файла...
-        const mcItems = ["stone", "grass_block", "dirt", "cobblestone", "oak_planks", "diamond_sword", "elytra", "netherite_ingot"];
-        let selectedItem = "stone";
-        function filterItems() {
-            const input = document.getElementById('itemSearch').value.toLowerCase();
-            const results = document.getElementById('itemResults');
-            results.innerHTML = '';
-            if (input.length < 1) { results.style.display = 'none'; return; }
-            mcItems.filter(i => i.includes(input)).forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'item-option';
-                div.innerText = item;
-                div.onclick = () => { selectedItem = item; document.getElementById('itemSearch').value = item; results.style.display = 'none'; updateCmd(); };
-                results.appendChild(div);
-            });
-            results.style.display = 'block';
-        }
-        function updateCmd() {
-            const target = document.getElementById('cmdTarget').value;
-            const count = document.getElementById('cmdCount').value || 1;
-            document.getElementById('cmdResult').innerText = `/give ${target} minecraft:${selectedItem} ${count}`;
-        }
-        function copyCommand() { navigator.clipboard.writeText(document.getElementById('cmdResult').innerText); alert("Команда скопирована!"); }
-        function openCmdModal() { document.getElementById('cmdModal').style.display = 'block'; }
-        function closeCmdModal() { document.getElementById('cmdModal').style.display = 'none'; }
-
-        async function loadServers() {
-            const sList = document.getElementById('server-list');
-            sList.innerHTML = '<p style="color:gray">Обновление...</p>';
-            const servers = [{ip:'mc.hypixel.net', name:'Hypixel'}, {ip:'play.funtime.su', name:'FunTime'}];
-            for (let s of servers) {
-                try {
-                    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${s.ip}`);
-                    const data = await res.json();
-                    sList.innerHTML += `<div class="server-item"><span>${s.name}</span><span style="color:var(--accent)">${data.players.online} 🟢</span></div>`;
-                } catch { /* ignore */ }
-            }
-        }
-
-        window.onload = () => { displayNews(newsList); loadServers(); };
     </script>
 </body>
 </html>
