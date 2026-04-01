@@ -3,314 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINE-BASE | Игровая панель</title>
-    <link rel="icon" type="image/png" href="logo.png">
+    <title>MINE-BASE | Игровая Панель</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* --- СЕТКА ПАНЕЛИ --- */
-        .panel-grid {
-            display: grid;
-            grid-template-columns: 350px 1fr 380px;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1800px;
-            margin: 0 auto;
-            align-items: start;
-        }
-
-        .version-info {
-            display: flex;
-            align-items: baseline;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-        .v-main { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
-        .v-sub { font-size: 0.8rem; color: var(--text-muted); margin-left: 10px; text-transform: uppercase; }
-
-        /* --- ЗАМЕТКИ --- */
-        .notes-area {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 25px;
-            border: 2px solid var(--border);
-            min-height: 800px;
-            display: flex;
-            flex-direction: column;
-        }
-        .note-item {
-            display: flex; align-items: center; padding: 15px; background: #252525;
-            margin-bottom: 10px; border-radius: 8px; transition: 0.3s;
-            border-left: 4px solid var(--accent); animation: fadeIn 0.3s ease;
-        }
-        .note-item:hover { transform: scale(1.01); background: #2d2d2d; }
-        .note-text { flex-grow: 1; margin: 0 15px; font-weight: 600; }
-        .btn-del {
-            background: #ff5555; color: white; border: none; padding: 5px 10px;
-            border-radius: 4px; cursor: pointer; font-weight: bold;
-        }
-        .btn-del:hover { background: #ff0000; }
-
-        /* --- WIKI КОМАНД --- */
-        .wiki-area {
-            background: var(--card-bg); border-radius: var(--radius);
-            padding: 25px; border: 2px solid var(--border);
-            height: 800px; 
-            display: flex; flex-direction: column; box-sizing: border-box;
-        }
-        .cmd-list {
-            flex-grow: 1; overflow-y: auto; margin-top: 15px; padding-right: 5px;
-        }
-        .cmd-card {
-            background: #151515; padding: 12px; margin-bottom: 10px;
-            border-radius: 6px; border: 1px solid #333; position: relative;
-        }
-        .cmd-code { color: var(--accent); font-family: monospace; display: block; margin-bottom: 5px; font-size: 0.85rem;}
-        .cmd-desc { font-size: 0.75rem; color: gray; }
-        .cmd-copy {
-            position: absolute; right: 10px; top: 10px;
-            background: #333; color: #fff; border: none;
-            padding: 4px 8px; border-radius: 3px; font-size: 0.7rem; cursor: pointer;
-        }
-        .cmd-copy:hover { background: var(--accent); color: #000; }
-
-        /* --- ТАБЛИЦА ЕДЫ --- */
-        .food-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        .food-table th { background: #222; color: var(--accent); padding: 8px; text-align: left; border-bottom: 2px solid var(--accent); }
-        .food-table td { padding: 8px; border-bottom: 1px solid #333; color: #e0e0e0; }
-        .food-table tr:hover { background: #1a1a1a; }
-        .tier-great { border-left: 3px solid #FFD700; }
-        .tier-good { border-left: 3px solid #00FA9A; }
-        .tier-normal { border-left: 3px solid #FFA500; }
-        .tier-low { border-left: 3px solid #FF6347; }
-
-        /* --- МОДАЛЬНОЕ ОКНО --- */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-            z-index: 2000; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: #1e1e1e; border: 2px solid var(--accent); border-radius: 12px;
-            width: 900px; max-width: 95%; max-height: 90vh; overflow-y: auto;
-            display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; padding: 30px; position: relative;
-        }
-        .close-modal {
-            position: absolute; top: 15px; right: 20px; font-size: 1.5rem;
-            color: #fff; cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
-        .close-modal:hover { color: #ff5555; }
-
-        .armor-preview-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-            background: #111; padding: 20px; border-radius: 8px; text-align: center;
-        }
-        .armor-svg { width: 60px; height: 60px; fill: #a06540; transition: fill 0.3s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+        :root { --accent: #ffaa00; --bg: #0f0f0f; }
         
-        /* Сетка крафта */
-        .crafting-section { background: #151515; padding: 15px; border-radius: 8px; margin-top: 15px;}
-        .recipe-row {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #222; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #333;
+        /* БРОНЯ: Улучшенное превью */
+        .armor-preview-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            justify-content: center;
         }
-        .mc-grid {
-            display: grid; grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px);
-            gap: 2px; background: #8b8b8b; padding: 4px; border: 2px solid #373737; border-radius: 4px;
+        .armor-piece {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            position: relative;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
-        .mc-cell {
-            background: #8b8b8b; width: 30px; height: 30px; border-top: 2px solid #373737;
-            border-left: 2px solid #373737; border-bottom: 2px solid #fff; border-right: 2px solid #fff;
-            display: flex; justify-content: center; align-items: center; font-size: 18px;
-        }
-        .mc-arrow { color: #fff; font-size: 24px; font-weight: bold; margin: 0 15px; }
-        .mc-result {
-            width: 40px; height: 40px; background: #8b8b8b; border-top: 2px solid #373737;
-            border-left: 2px solid #373737; border-bottom: 2px solid #fff; border-right: 2px solid #fff;
-            display: flex; justify-content: center; align-items: center;
+        /* Имитация иконок брони через маски */
+        .helmet { background-image: url('https://minecraft.wiki/images/Leather_Cap_JE2_BE2.png'); }
+        .chestplate { background-image: url('https://minecraft.wiki/images/Leather_Tunics_JE2_BE2.png'); }
+        .leggings { background-image: url('https://minecraft.wiki/images/Leather_Pants_JE2_BE2.png'); }
+        .boots { background-image: url('https://minecraft.wiki/images/Leather_Boots_JE2_BE2.png'); }
+
+        .recipe-box {
+            background: #000;
+            padding: 10px;
+            border-left: 4px solid var(--accent);
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 0.9rem;
         }
 
-        .huge-color-picker { width: 100%; height: 60px; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 15px; }
+        /* ТАБЛИЦА СЫТОСТИ */
+        .food-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .food-table th, .food-table td { padding: 10px; text-align: left; border-bottom: 1px solid #333; }
+        .food-table th { color: var(--accent); font-size: 0.8rem; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* ЗАМЕТКИ */
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            background: #1a1a1a;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .task-item.done span { text-decoration: line-through; color: #666; }
+        .task-btns button { margin-left: 5px; cursor: pointer; }
+
+        .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+        @media (max-width: 768px) { .panel-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <header>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <img src="logo.png" alt="Logo" style="height: 50px;" onerror="this.src='https://via.placeholder.com/50?text=MB'">
-            <div class="logo">MINE-BASE</div>
-        </div>
-        <nav>
-            <a href="index.html">Главная</a>
-        </nav>
-    </header>
+<header>
+    <div class="logo">MINE-BASE PANEL <span style="font-size: 0.6rem; color: gray;">V 1.0 alpha 0.1 build 06</span></div>
+    <nav><a href="index.html">На главную</a></nav>
+</header>
 
-    <div class="panel-grid">
+<div class="panel-grid">
+    
+    <section class="sidebar-block">
+        <h3>🎨 ПОКРАСКА БРОНИ (HEX)</h3>
+        <input type="color" id="armorColor" oninput="updateArmor()" style="width: 100%; height: 40px; cursor: pointer;">
         
-        <aside>
-            <div class="version-info">
-                <span class="v-main">V 1.0</span>
-                <span class="v-sub">alpha 0.1 build 05</span>
-            </div>
-
-            <div class="sidebar-block">
-                <h3 style="color: var(--accent); margin-top: 0;">🧭 НАВИГАЦИЯ</h3>
-                
-                <details open>
-                    <summary>🌌 ПОРТАЛ / КООРДИНАТЫ</summary>
-                    <div style="padding: 10px;">
-                        <label style="font-size: 0.75rem; color: gray;">Обычный мир (X / Z):</label>
-                        <input type="number" id="overworldInp" class="calc-input" placeholder="Координаты..." oninput="calcCoords('over')">
-                        <div style="text-align: center; color: var(--accent); font-weight: bold; margin: 5px 0;">↕ 8:1 ↕</div>
-                        <label style="font-size: 0.75rem; color: gray;">Незер (X / Z):</label>
-                        <input type="number" id="netherInp" class="calc-input" placeholder="Координаты..." oninput="calcCoords('neth')">
-                    </div>
-                </details>
-
-                <details open style="margin-top: 15px;">
-                    <summary>🎨 ПОКРАСКА БРОНИ</summary>
-                    <div style="padding: 10px; text-align: center;">
-                        <p style="font-size: 0.8rem; color: #aaa; margin-top: 0;">Симулятор крафта и генератор команд 1.14+</p>
-                        <button class="tool-btn" style="background: var(--accent); color: #000; font-size: 0.9rem; padding: 12px;" onclick="openArmorModal()">ОТКРЫТЬ ГЕНЕРАТОР 🛠️</button>
-                    </div>
-                </details>
-
-                <details open style="margin-top: 15px;">
-                    <summary>🍎 ТАБЛИЦА СЫТОСТИ</summary>
-                    <div style="max-height: 450px; overflow-y: auto; background: #111; border-radius: 4px; border: 1px solid #333;">
-                        <table class="food-table">
-                            <thead>
-                                <tr><th>Еда</th><th>Голод</th><th>Насыщ.</th></tr>
-                            </thead>
-                            <tbody id="foodTableBody"></tbody>
-                        </table>
-                    </div>
-                </details>
-            </div>
-        </aside>
-
-        <main class="notes-area">
-            <h2 style="color: var(--accent); margin-top: 0;">📒 МОИ ЗАМЕТКИ</h2>
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <input type="text" id="noteInput" class="calc-input" style="margin: 0;" placeholder="Добавить задачу...">
-                <button class="tool-btn" style="margin: 0; width: auto; padding: 0 25px;" onclick="addNote()">ДОБАВИТЬ</button>
-            </div>
-            <div id="notesContainer"></div>
-        </main>
-
-        <aside class="wiki-area">
-            <h3 style="color: var(--accent); margin-top: 0; font-size: 1.5rem;">📜 WIKI КОМАНД</h3>
-            <input type="text" id="cmdSearch" class="calc-input" placeholder="Поиск команды..." oninput="filterCmds()">
-            <div class="cmd-list" id="cmdContainer"></div>
-        </aside>
-
-    </div>
-
-    <div class="modal-overlay" id="armorModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeArmorModal()">✕</span>
-            <div>
-                <h3 style="margin-top:0; color:var(--accent);">Цвет Брони</h3>
-                <input type="color" id="modalColorPicker" class="huge-color-picker" value="#3C44AA" oninput="processArmorTool(this.value)">
-                <h4 style="margin-bottom: 10px;">Превью:</h4>
-                <div class="armor-preview-grid">
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M4 2h8v3h2v5h-2v-3H4v3H2V5h2V2z"/></svg></div>
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M4 2h8v2h3v5h-2v6H3V9H1V4h3V2z"/></svg></div>
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M4 2h8v4h-2v9H7V8H5v7H2V6h2V2z"/></svg></div>
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M3 8h3v7H2V9h1V8zm7 0h3v7H9V8h1z"/></svg></div>
-                </div>
-            </div>
-            <div>
-                <h3 style="margin-top:0; color:var(--accent);">Команды /give</h3>
-                <div style="background:#000; padding:10px; border-radius:6px; font-family:monospace; font-size:0.75rem; border-left:3px solid var(--accent); color: white;" id="armorCommandsDiv"></div>
-                <h3 style="color:var(--accent); margin-top:20px;">Рецепты</h3>
-                <div class="crafting-section" id="craftingRecipesDiv"></div>
-            </div>
+        <div class="armor-preview-container">
+            <div id="p-helmet" class="armor-piece helmet"></div>
+            <div id="p-chest" class="armor-piece chestplate"></div>
+            <div id="p-leg" class="armor-piece leggings"></div>
+            <div id="p-boots" class="armor-piece boots"></div>
         </div>
-    </div>
 
-    <script>
-        // --- ФУНКЦИЯ КООРДИНАТ (ИСПРАВЛЕНО) ---
-        function calcCoords(type) {
-            const ow = document.getElementById('overworldInp');
-            const neth = document.getElementById('netherInp');
+        <div id="armorRecipe" class="recipe-box">
+            HEX: #ffaa00 <br>
+            RGB: 255, 170, 0 <br>
+            Команда: /give @s leather_chestplate{display:{color:16755200}}
+        </div>
+    </section>
 
-            if (type === 'over') {
-                if (ow.value === "") neth.value = "";
-                else neth.value = Math.floor(ow.value / 8);
-            } else {
-                if (neth.value === "") ow.value = "";
-                else ow.value = Math.floor(neth.value * 8);
-            }
-        }
+    <section class="sidebar-block">
+        <h3>🍗 ТАБЛИЦА СЫТОСТИ</h3>
+        <div style="max-height: 300px; overflow-y: auto;">
+            <table class="food-table">
+                <thead>
+                    <tr> <th>ЕДА</th> <th>ГОЛОД</th> <th>НАСЫЩ.</th> </tr>
+                </thead>
+                <tbody id="food-body">
+                    </tbody>
+            </table>
+        </div>
+    </section>
 
-        // --- ОСТАЛЬНАЯ ЛОГИКА ---
-        const commands = [
-            { code: "/gamemode creative", desc: "Режим Творческий" },
-            { code: "/gamemode survival", desc: "Режим Выживание" },
-            { code: "/tp @s ~ ~ ~", desc: "Телепортация" },
-            { code: "/weather clear", desc: "Ясная погода" },
-            { code: "/time set day", desc: "Установить день" },
-            { code: "/gamerule keepInventory true", desc: "Сохранение инвентаря" }
-        ];
+    <section class="sidebar-block">
+        <h3>📝 МОИ ЗАМЕТКИ / ЗАДАЧИ</h3>
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <input type="text" id="taskInput" placeholder="Что нужно сделать?" style="flex:1; padding: 8px;">
+            <button onclick="addTask()" class="tool-btn" style="width: auto; margin:0;">+</button>
+        </div>
+        <div id="taskList"></div>
+    </section>
 
-        function filterCmds() {
-            const q = document.getElementById('cmdSearch').value.toLowerCase();
-            const container = document.getElementById('cmdContainer');
-            container.innerHTML = '';
-            commands.filter(c => c.code.includes(q) || c.desc.toLowerCase().includes(q)).forEach(c => {
-                container.innerHTML += `<div class="cmd-card">
-                    <span class="cmd-code">${c.code}</span>
-                    <div class="cmd-desc">${c.desc}</div>
-                    <button class="cmd-copy" onclick="copyTxt('${c.code}')">Копировать</button>
-                </div>`;
-            });
-        }
+    <section class="sidebar-block">
+        <h3>📜 КОМАНДЫ (WIKI)</h3>
+        <div style="max-height: 300px; overflow-y: auto; font-size: 0.85rem;">
+            <p><strong>/gamemode survival/creative/spectator</strong> — Смена режима</p>
+            <p><strong>/tp [игрок] [x y z]</strong> — Телепортация</p>
+            <p><strong>/locate structure [name]</strong> — Найти структуру</p>
+            <p><strong>/give [игрок] [предмет] [кол-во]</strong> — Выдать вещь</p>
+            <p><strong>/time set day/night</strong> — Время суток</p>
+            <p><strong>/weather clear/rain/thunder</strong> — Погода</p>
+            <p><strong>/spawnpoint</strong> — Точка возрождения</p>
+            <p><strong>/effect give [игрок] [эффект]</strong> — Выдать эффект</p>
+            <p><strong>/attribute</strong> — Изменение атрибутов (HP, урон)</p>
+        </div>
+    </section>
 
-        function copyTxt(t) { navigator.clipboard.writeText(t); alert("Скопировано!"); }
+</div>
 
-        const foodTiers = [
-            { class: "tier-great", name: "Золотая морковь", h: "6", s: "14.4" },
-            { class: "tier-good", name: "Стейк", h: "8", s: "12.8" },
-            { class: "tier-normal", name: "Хлеб", h: "5", s: "6.0" }
-        ];
+<script>
+    // --- ЛОГИКА БРОНИ ---
+    function updateArmor() {
+        const color = document.getElementById('armorColor').value;
+        const pieces = ['p-helmet', 'p-chest', 'p-leg', 'p-boots'];
+        
+        // Перекрашиваем превью (через фильтр или фон, здесь для наглядности фон)
+        pieces.forEach(id => {
+            document.getElementById(id).style.backgroundColor = color;
+            document.getElementById(id).style.backgroundBlendMode = "multiply";
+        });
 
-        function loadFoodTable() {
-            const tbody = document.getElementById('foodTableBody');
-            foodTiers.forEach(f => {
-                tbody.innerHTML += `<tr class="${f.class}"><td>${f.name}</td><td>${f.h}</td><td>${f.s}</td></tr>`;
-            });
-        }
+        const r = parseInt(color.substr(1,2), 16);
+        const g = parseInt(color.substr(3,2), 16);
+        const b = parseInt(color.substr(5,2), 16);
+        const mcColor = (r << 16) + (g << 8) + b;
 
-        function addNote() {
-            const inp = document.getElementById('noteInput');
-            if(!inp.value.trim()) return;
-            const container = document.getElementById('notesContainer');
-            const note = document.createElement('div');
-            note.className = 'note-item';
-            note.innerHTML = `<span class="note-text">${inp.value}</span><button class="btn-del" onclick="this.parentElement.remove()">✕</button>`;
-            container.prepend(note);
-            inp.value = '';
-        }
+        document.getElementById('armorRecipe').innerHTML = `
+            HEX: ${color.toUpperCase()} <br>
+            RGB: ${r}, ${g}, ${b} <br>
+            Команда: <small>/give @s leather_chestplate{display:{color:${mcColor}}}</small>
+        `;
+    }
 
-        function openArmorModal() { document.getElementById('armorModal').style.display = 'flex'; processArmorTool('#3C44AA'); }
-        function closeArmorModal() { document.getElementById('armorModal').style.display = 'none'; }
+    // --- ЛОГИКА ЕДЫ ---
+    const foods = [
+        { name: "Золотая морковь", h: 6, s: 14.4 },
+        { name: "Жареная говядина", h: 8, s: 12.8 },
+        { name: "Жареная свинина", h: 8, s: 12.8 },
+        { name: "Жареная баранина", h: 6, s: 9.6 },
+        { name: "Золотое яблоко", h: 4, s: 9.6 },
+        { name: "Жареная курица", h: 6, s: 7.2 },
+        { name: "Жареный лосось", h: 6, s: 9.6 },
+        { name: "Хлеб", h: 5, s: 6.0 },
+        { name: "Арбуз", h: 2, s: 1.2 },
+        { name: "Яблоко", h: 4, s: 2.4 },
+        { name: "Суп", h: 6, s: 7.2 }
+    ];
 
-        function processArmorTool(hexColor) {
-            document.querySelectorAll('.armor-svg').forEach(svg => svg.style.fill = hexColor);
-            const intColor = parseInt(hexColor.replace('#', ''), 16);
-            let cmdsHtml = '';
-            ['helmet', 'chestplate', 'leggings', 'boots'].forEach(part => {
-                cmdsHtml += `<div style="margin-bottom:5px;">/give @s leather_${part}{display:{color:${intColor}}}</div>`;
-            });
-            document.getElementById('armorCommandsDiv').innerHTML = cmdsHtml;
-        }
+    function loadFood() {
+        const body = document.getElementById('food-body');
+        foods.forEach(f => {
+            body.innerHTML += `<tr><td>${f.name}</td><td>${f.h} 🍖</td><td>${f.s}</td></tr>`;
+        });
+    }
 
-        window.onload = () => {
-            loadFoodTable();
-            filterCmds();
-        };
-    </script>
+    // --- ЛОГИКА ЗАМЕТОК ---
+    function addTask() {
+        const input = document.getElementById('taskInput');
+        if (!input.value) return;
+        const list = document.getElementById('taskList');
+        const div = document.createElement('div');
+        div.className = 'task-item';
+        div.innerHTML = `
+            <span>${input.value}</span>
+            <div class="task-btns">
+                <button onclick="this.parentElement.parentElement.classList.toggle('done')" style="background:green; color:white; border:none; border-radius:3px;">✔</button>
+                <button onclick="this.parentElement.parentElement.remove()" style="background:red; color:white; border:none; border-radius:3px;">✖</button>
+            </div>
+        `;
+        list.appendChild(div);
+        input.value = '';
+    }
+
+    window.onload = () => {
+        loadFood();
+        updateArmor(); // Инициализация цвета
+    };
+</script>
+
 </body>
 </html>
