@@ -7,14 +7,25 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Стили для всплывающего окна сервера */
-        .server-item { position: relative; cursor: pointer; }
+        /* --- СЕРВЕРА --- */
+        .server-item { position: relative; cursor: pointer; margin-bottom: 8px; }
         
+        /* Невидимый мост, чтобы мышка не соскальзывала при переходе на табличку */
+        .server-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -25px; /* Заполняем пространство слева */
+            width: 25px;
+            height: 100%;
+        }
+
         .server-popup {
             display: none;
             position: absolute;
-            left: 105%;
-            top: 0;
+            right: 105%; /* ТЕПЕРЬ СЛЕВА */
+            left: auto;
+            top: -10px;
             width: 220px;
             background: #1a1a1a;
             border: 2px solid var(--accent);
@@ -41,11 +52,24 @@
         }
 
         .copy-hint {
-            font-size: 0.7rem;
-            color: gray;
-            margin-top: 5px;
-            display: block;
-            text-align: center;
+            font-size: 0.7rem; color: gray; margin-top: 5px; display: block; text-align: center;
+        }
+
+        /* --- СТРАНИЦА НОВОСТИ --- */
+        #full-news-page {
+            display: none;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 30px;
+            background: #151515;
+            border-radius: 12px;
+            border: 1px solid #333;
+            min-height: 80vh;
+        }
+        .ad-banner {
+            background: #222; border: 2px dashed #444; border-radius: 8px;
+            padding: 30px; text-align: center; color: gray; margin: 20px 0;
+            font-weight: bold; text-transform: uppercase; letter-spacing: 2px;
         }
     </style>
 </head>
@@ -62,49 +86,88 @@
         </nav>
     </header>
 
-    <section class="search-section">
-        <div class="hero-overlay">
-            <h1>БАЗА ЗНАНИЙ MINE-BASE 🏅</h1>
-            <div class="search-wrapper">
-                <select id="categoryFilter" class="filter-select">
-                    <option value="all">📁 Все категории</option>
-                    <option value="Обновления">📢 Новости</option>
-                    <option value="Моды">🧩 Моды</option>
-                    <option value="Гайды">📚 Гайды</option>
-                </select>
-                <input type="text" id="searchInput" class="search-box" placeholder="Найти мод или гайд...">
-            </div>
-        </div>
-    </section>
-
-    <main class="main-container">
-        <section id="news-container"></section>
-
-        <aside>
-            <div class="sidebar-block">
-                <h3 style="color: var(--accent); margin-top:0;">🛠 ИНСТРУМЕНТЫ</h3>
-                <button class="tool-btn" onclick="openCmdModal()">ГЕНЕРАТОР /GIVE ⚙️</button>
-                <a href="panel.html" class="tool-btn">ПОРТАЛ В НЕЗЕР 🌌</a>
-            </div>
-
-            <div class="sidebar-block">
-                <h3 style="color: var(--accent); margin-top:0;">📊 СЕРВЕРА ONLINE</h3>
-                <div id="server-list">
-                    <p style="color: gray; font-size: 0.9rem;">Загрузка серверов...</p>
+    <div id="main-wrapper">
+        <section class="search-section">
+            <div class="hero-overlay">
+                <h1>БАЗА ЗНАНИЙ MINE-BASE 🏅</h1>
+                <div class="search-wrapper">
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="all">📁 Все категории</option>
+                        <option value="Обновления">📢 Новости</option>
+                        <option value="Моды">🧩 Моды</option>
+                        <option value="Гайды">📚 Гайды</option>
+                    </select>
+                    <input type="text" id="searchInput" class="search-box" placeholder="Найти мод или гайд...">
                 </div>
             </div>
-        </aside>
-    </main>
+        </section>
+
+        <main class="main-container">
+            <section id="news-container"></section>
+
+            <aside>
+                <div class="sidebar-block">
+                    <h3 style="color: var(--accent); margin-top:0;">🛠 ИНСТРУМЕНТЫ</h3>
+                    <button class="tool-btn" onclick="openCmdModal()">ГЕНЕРАТОР /GIVE ⚙️</button>
+                    <a href="panel.html" class="tool-btn">ПОРТАЛ В НЕЗЕР 🌌</a>
+                </div>
+
+                <div class="sidebar-block">
+                    <h3 style="color: var(--accent); margin-top:0;">📊 СЕРВЕРА ONLINE</h3>
+                    <div id="server-list">
+                        <p style="color: gray; font-size: 0.9rem;">Загрузка серверов...</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <div id="full-news-page">
+        <button onclick="closeFullNews()" class="tool-btn" style="width: auto; padding: 10px 20px; margin-bottom: 20px;">⬅ ВЕРНУТЬСЯ НА ГЛАВНУЮ</button>
+        <img id="fnImg" src="" style="width:100%; max-height: 450px; object-fit: cover; border-radius:12px;">
+        <h1 id="fnTitle" style="color:var(--accent); font-size: 2.5rem; margin-top: 20px; margin-bottom: 10px;"></h1>
+        <div style="color: #888; font-size: 0.9rem; margin-bottom: 20px;" id="fnMeta"></div>
+        
+        <div class="ad-banner">МЕСТО ДЛЯ РЕКЛАМНОГО БАННЕРА</div>
+        
+        <div id="fnText" style="line-height:1.8; white-space:pre-line; color: #ddd; font-size: 1.1rem;"></div>
+        
+        <div class="ad-banner" style="margin-top: 40px;">НИЖНИЙ РЕКЛАМНЫЙ БЛОК</div>
+    </div>
+
+    <div id="cmdModal" class="modal">
+        <div class="modal-content">
+            <span style="float:right; cursor:pointer; font-size:28px; color:white;" onclick="closeCmdModal()">&times;</span>
+            <h2 style="color: var(--accent); margin-top:0;">ГЕНЕРАТОР /GIVE</h2>
+            <label style="font-size: 0.9rem;">Получатель:</label>
+            <select id="cmdTarget" class="calc-input" onchange="updateCmd()">
+                <option value="@s">Себе (@s)</option>
+                <option value="@p">Ближайшему (@p)</option>
+                <option value="@a">Всем (@a)</option>
+            </select>
+            <label style="font-size: 0.9rem;">Предмет (английский):</label>
+            <div style="position:relative;">
+                <input type="text" id="itemSearch" class="calc-input" placeholder="Начни писать: diamond..." oninput="filterItems()">
+                <div id="itemResults" class="item-search-results"></div>
+            </div>
+            <label style="font-size: 0.9rem;">Количество:</label>
+            <input type="number" id="cmdCount" class="calc-input" value="1" min="1" oninput="updateCmd()">
+            <div style="background:#000; padding:15px; border-radius:4px; color:var(--accent); font-family:monospace; font-weight:bold; margin-bottom:15px; border: 1px solid #333;" id="cmdResult">
+                /give @s minecraft:stone 1
+            </div>
+            <button class="tool-btn" onclick="copyCommand()">СКОПИРОВАТЬ КОМАНДУ</button>
+        </div>
+    </div>
 
     <script src="news-data.js"></script>
     <script>
-        // СПИСОК ИЗ 5 СЕРВЕРОВ
+        // СПИСОК ИЗ 5 СЕРВЕРОВ (Исправленные IP)
         const servers = [
-            { ip: 'mc.hypixel.net', name: 'Hypixel', desc: 'Самый большой сервер в мире: мини-игры, SkyBlock и BedWars.' },
-            { ip: 'play.funtime.su', name: 'FunTime', desc: 'Лучшая анархия в СНГ. Гриферство, выживание и кланы.' },
-            { ip: 'play.holyworld.ru', name: 'HolyWorld', desc: 'Популярная анархия с уникальными предметами и ивентами.' },
-            { ip: 'play.wellmore.ru', name: 'WellMore', desc: 'Мини-игры на любой вкус и стабильный онлайн.' },
-            { ip: 'play.mstnetwork.ru', name: 'MST Network', desc: 'Анархия, выживание и сильное комьюнити.' }
+            { ip: 'mc.hypixel.net', name: 'Hypixel', desc: 'Мини-игры, SkyBlock и BedWars.' },
+            { ip: 'play.funtime.su', name: 'FunTime', desc: 'Лучшая анархия в СНГ.' },
+            { ip: 'mc.reallyworld.ru', name: 'ReallyWorld', desc: 'Анархия с уникальными ивентами.' },
+            { ip: 'mc.holyworld.ru', name: 'HolyWorld', desc: 'Масштабная анархия и PvP.' },
+            { ip: 'play.sunrise.ru', name: 'SunRise', desc: 'Выживание и гриферство.' }
         ];
 
         async function loadServers() {
@@ -124,7 +187,7 @@
                 const sItem = document.createElement('div');
                 sItem.className = 'server-item';
                 sItem.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; width:100%;">
+                    <div style="display:flex; justify-content:space-between; width:100%; padding: 5px 0;">
                         <span>${s.name}</span>
                         <span style="color:var(--accent)">${statusText}</span>
                     </div>
@@ -132,7 +195,7 @@
                         <strong style="color:var(--accent)">${s.name}</strong>
                         <p style="font-size:0.8rem; margin: 10px 0; color:#ccc;">${s.desc}</p>
                         <span class="popup-ip">${s.ip}</span>
-                        <span class="copy-hint">Нажми, чтобы скопировать</span>
+                        <span class="copy-hint">Кликни, чтобы скопировать IP</span>
                     </div>
                 `;
                 sList.appendChild(sItem);
@@ -141,10 +204,30 @@
 
         function copyIp(ip) {
             navigator.clipboard.writeText(ip);
-            alert("IP сервера " + ip + " скопирован!");
+            alert("IP сервера скопирован: " + ip);
         }
 
-        // Логика фильтров (как в прошлом шаге)
+        // ОТКРЫТИЕ И ЗАКРЫТИЕ НОВОСТЕЙ (СТРАНИЦЕЙ)
+        function openFullNews(idx) {
+            const n = newsList[idx];
+            document.getElementById('fnImg').src = n.image;
+            document.getElementById('fnTitle').innerText = n.title;
+            document.getElementById('fnMeta').innerText = `🏷️ ${n.category} | 📅 ${n.date || 'Недавно'}`;
+            
+            // Если в news-data.js есть fullText, используем его, иначе description
+            document.getElementById('fnText').innerText = n.fullText ? n.fullText : n.description + "\n\n(Полный текст новости нужно добавить в news-data.js в поле fullText)";
+            
+            document.getElementById('main-wrapper').style.display = 'none';
+            document.getElementById('full-news-page').style.display = 'block';
+            window.scrollTo(0, 0); // Прокрутка наверх
+        }
+
+        function closeFullNews() {
+            document.getElementById('full-news-page').style.display = 'none';
+            document.getElementById('main-wrapper').style.display = 'block';
+        }
+
+        // ЛОГИКА ФИЛЬТРОВ И ВЫВОДА
         function applyFilters() {
             const category = document.getElementById('categoryFilter').value;
             const searchText = document.getElementById('searchInput').value.toLowerCase();
@@ -159,9 +242,10 @@
         function displayNews(data) {
             const container = document.getElementById('news-container');
             container.innerHTML = data.length ? '' : '<p style="color:gray; text-align:center;">Ничего не найдено...</p>';
-            data.forEach((item, index) => {
+            data.forEach((item) => {
+                const realIndex = newsList.findIndex(n => n.title === item.title);
                 container.innerHTML += `
-                    <article class="news-card">
+                    <article class="news-card" onclick="openFullNews(${realIndex})">
                         <img src="${item.image}">
                         <div class="news-content">
                             <h2 style="color:var(--accent)">${item.title}</h2>
@@ -176,6 +260,42 @@
 
         document.getElementById('categoryFilter').addEventListener('change', applyFilters);
         document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+        // ЛОГИКА /GIVE
+        const mcItems = ["stone", "grass_block", "dirt", "cobblestone", "diamond_sword", "iron_sword", "golden_apple", "elytra", "netherite_ingot"];
+        let selectedItem = "stone";
+
+        function filterItems() {
+            const input = document.getElementById('itemSearch').value.toLowerCase();
+            const results = document.getElementById('itemResults');
+            results.innerHTML = '';
+            if (input.length < 1) { results.style.display = 'none'; return; }
+            const filtered = mcItems.filter(i => i.includes(input));
+            if (filtered.length > 0) {
+                results.style.display = 'block';
+                filtered.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item-option';
+                    div.innerText = item.replace('_', ' ');
+                    div.onclick = () => {
+                        selectedItem = item;
+                        document.getElementById('itemSearch').value = item;
+                        results.style.display = 'none';
+                        updateCmd();
+                    };
+                    results.appendChild(div);
+                });
+            } else { results.style.display = 'none'; }
+        }
+
+        function updateCmd() {
+            const target = document.getElementById('cmdTarget').value;
+            const count = document.getElementById('cmdCount').value || 1;
+            document.getElementById('cmdResult').innerText = `/give ${target} minecraft:${selectedItem} ${count}`;
+        }
+        function copyCommand() { navigator.clipboard.writeText(document.getElementById('cmdResult').innerText); alert("Команда скопирована!"); }
+        function openCmdModal() { document.getElementById('cmdModal').style.display = 'block'; }
+        function closeCmdModal() { document.getElementById('cmdModal').style.display = 'none'; }
 
         window.onload = () => {
             displayNews(newsList);
