@@ -44,11 +44,12 @@
             border-left: 4px solid var(--accent); animation: fadeIn 0.3s ease;
         }
         .note-item:hover { transform: scale(1.01); background: #2d2d2d; }
-        .note-text { flex-grow: 1; margin: 0 15px; font-weight: 600; }
-        .btn-del {
-            background: #ff5555; color: white; border: none; padding: 5px 10px;
-            border-radius: 4px; cursor: pointer; font-weight: bold;
-        }
+        .note-text { flex-grow: 1; margin: 0 15px; font-weight: 600; transition: 0.3s; }
+        /* Класс для выполненной задачи */
+        .note-item.done .note-text { text-decoration: line-through; color: #666; opacity: 0.6; }
+        
+        .btn-check { background: #55ff55; color: #000; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .btn-del { background: #ff5555; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-del:hover { background: #ff0000; }
 
         /* --- WIKI КОМАНД --- */
@@ -109,24 +110,8 @@
         
         /* Сетка крафта */
         .crafting-section { background: #151515; padding: 15px; border-radius: 8px; margin-top: 15px;}
-        .recipe-row {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #222; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #333;
-        }
-        .mc-grid {
-            display: grid; grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px);
-            gap: 2px; background: #8b8b8b; padding: 4px; border: 2px solid #373737; border-radius: 4px;
-        }
-        .mc-cell {
-            background: #8b8b8b; width: 30px; height: 30px; border-top: 2px solid #373737;
-            border-left: 2px solid #373737; border-bottom: 2px solid #fff; border-right: 2px solid #fff;
-            display: flex; justify-content: center; align-items: center; font-size: 18px;
-        }
-        .mc-arrow { color: #fff; font-size: 24px; font-weight: bold; margin: 0 15px; }
-        .mc-result {
-            width: 40px; height: 40px; background: #8b8b8b; border-top: 2px solid #373737;
-            border-left: 2px solid #373737; border-bottom: 2px solid #fff; border-right: 2px solid #fff;
-            display: flex; justify-content: center; align-items: center;
+        .recipe-box {
+            background: #222; padding: 15px; border-radius: 6px; border: 1px solid #444; color: #eee; font-size: 0.85rem; line-height: 1.6;
         }
 
         .huge-color-picker { width: 100%; height: 60px; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 15px; }
@@ -151,7 +136,7 @@
         <aside>
             <div class="version-info">
                 <span class="v-main">V 1.0</span>
-                <span class="v-sub">alpha 0.1 build 05</span>
+                <span class="v-sub">alpha 0.1 build 06</span>
             </div>
 
             <div class="sidebar-block">
@@ -215,27 +200,32 @@
                 <input type="color" id="modalColorPicker" class="huge-color-picker" value="#3C44AA" oninput="processArmorTool(this.value)">
                 <h4 style="margin-bottom: 10px;">Превью:</h4>
                 <div class="armor-preview-grid">
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M4 2h8v3h2v5h-2v-3H4v3H2V5h2V2z"/></svg></div>
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M4 2h8v2h3v5h-2v6H3V9H1V4h3V2z"/></svg></div>
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M4 2h8v4h-2v9H7V8H5v7H2V6h2V2z"/></svg></div>
-                    <div><svg class="armor-svg" viewBox="0 0 16 16"><path d="M3 8h3v7H2V9h1V8zm7 0h3v7H9V8h1z"/></svg></div>
+                    <div><svg class="armor-svg" viewBox="0 0 16 16" id="svg-helmet"><path d="M4 2h8v3h2v5h-2v-3H4v3H2V5h2V2z"/></svg></div>
+                    <div><svg class="armor-svg" viewBox="0 0 16 16" id="svg-chest"><path d="M4 2h8v2h3v5h-2v6H3V9H1V4h3V2z"/></svg></div>
+                    <div><svg class="armor-svg" viewBox="0 0 16 16" id="svg-legs"><path d="M4 2h8v4h-2v9H7V8H5v7H2V6h2V2z"/></svg></div>
+                    <div><svg class="armor-svg" viewBox="0 0 16 16" id="svg-boots"><path d="M3 8h3v7H2V9h1V8zm7 0h3v7H9V8h1z"/></svg></div>
                 </div>
             </div>
             <div>
-                <h3 style="margin-top:0; color:var(--accent);">Команды /give</h3>
+                <h3 style="margin-top:0; color:var(--accent);">Команды /give (Java)</h3>
                 <div style="background:#000; padding:10px; border-radius:6px; font-family:monospace; font-size:0.75rem; border-left:3px solid var(--accent); color: white;" id="armorCommandsDiv"></div>
-                <h3 style="color:var(--accent); margin-top:20px;">Рецепты</h3>
-                <div class="crafting-section" id="craftingRecipesDiv"></div>
+                
+                <h3 style="color:var(--accent); margin-top:20px;">Рецепт в Майнкрафт</h3>
+                <div class="recipe-box" id="armorRecipeInfo">
+                    Положите кожаную часть брони и выбранный краситель в сетку крафта. <br>
+                    <strong>Ингредиенты:</strong> <br>
+                    - Кожаная броня (1 шт) <br>
+                    - Краситель (Цвет: <span id="colorNameLabel">#3C44AA</span>)
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- ФУНКЦИЯ КООРДИНАТ (ИСПРАВЛЕНО) ---
+        // --- ФУНКЦИЯ КООРДИНАТ ---
         function calcCoords(type) {
             const ow = document.getElementById('overworldInp');
             const neth = document.getElementById('netherInp');
-
             if (type === 'over') {
                 if (ow.value === "") neth.value = "";
                 else neth.value = Math.floor(ow.value / 8);
@@ -245,14 +235,19 @@
             }
         }
 
-        // --- ОСТАЛЬНАЯ ЛОГИКА ---
+        // --- КОМАНДЫ (WIKI РАСШИРЕННАЯ) ---
         const commands = [
             { code: "/gamemode creative", desc: "Режим Творческий" },
             { code: "/gamemode survival", desc: "Режим Выживание" },
-            { code: "/tp @s ~ ~ ~", desc: "Телепортация" },
+            { code: "/tp @s ~ ~ ~", desc: "Телепортация к координатам" },
+            { code: "/locate structure [название]", desc: "Найти ближайшую структуру" },
+            { code: "/attribute @s generic.max_health base set 40", desc: "Увеличить здоровье" },
             { code: "/weather clear", desc: "Ясная погода" },
             { code: "/time set day", desc: "Установить день" },
-            { code: "/gamerule keepInventory true", desc: "Сохранение инвентаря" }
+            { code: "/gamerule keepInventory true", desc: "Сохранение инвентаря при смерти" },
+            { code: "/effect give @s night_vision infinite", desc: "Ночное зрение навсегда" },
+            { code: "/kill @e[type=item]", desc: "Очистить мусор на полу" },
+            { code: "/give @p diamond_sword{Enchantments:[{id:sharpness,lvl:5}]}", desc: "Выдать меч на Остроту 5" }
         ];
 
         function filterCmds() {
@@ -268,38 +263,62 @@
             });
         }
 
-        function copyTxt(t) { navigator.clipboard.writeText(t); alert("Скопировано!"); }
+        function copyTxt(t) { navigator.clipboard.writeText(t); alert("Команда скопирована!"); }
 
+        // --- ЕДА (ПОЛНАЯ ТАБЛИЦА) ---
         const foodTiers = [
             { class: "tier-great", name: "Золотая морковь", h: "6", s: "14.4" },
-            { class: "tier-good", name: "Стейк", h: "8", s: "12.8" },
-            { class: "tier-normal", name: "Хлеб", h: "5", s: "6.0" }
+            { class: "tier-great", name: "Жареная говядина", h: "8", s: "12.8" },
+            { class: "tier-good", name: "Жареная свинина", h: "8", s: "12.8" },
+            { class: "tier-good", name: "Жареная баранина", h: "6", s: "9.6" },
+            { class: "tier-normal", name: "Жареный лосось", h: "6", s: "9.6" },
+            { class: "tier-normal", name: "Хлеб", h: "5", s: "6.0" },
+            { class: "tier-normal", name: "Жареная курица", h: "6", s: "7.2" },
+            { class: "tier-low", name: "Яблоко", h: "4", s: "2.4" },
+            { class: "tier-low", name: "Арбуз", h: "2", s: "1.2" },
+            { class: "tier-low", name: "Ягоды", h: "2", s: "0.4" }
         ];
 
         function loadFoodTable() {
             const tbody = document.getElementById('foodTableBody');
+            tbody.innerHTML = '';
             foodTiers.forEach(f => {
-                tbody.innerHTML += `<tr class="${f.class}"><td>${f.name}</td><td>${f.h}</td><td>${f.s}</td></tr>`;
+                tbody.innerHTML += `<tr class="${f.class}"><td>${f.name}</td><td>${f.h} 🍖</td><td>${f.s}</td></tr>`;
             });
         }
 
+        // --- ЗАМЕТКИ (С КНОПКОЙ ВЫПОЛНЕНИЯ) ---
         function addNote() {
             const inp = document.getElementById('noteInput');
             if(!inp.value.trim()) return;
             const container = document.getElementById('notesContainer');
             const note = document.createElement('div');
             note.className = 'note-item';
-            note.innerHTML = `<span class="note-text">${inp.value}</span><button class="btn-del" onclick="this.parentElement.remove()">✕</button>`;
+            note.innerHTML = `
+                <button class="btn-check" onclick="toggleNote(this)">✔</button>
+                <span class="note-text">${inp.value}</span>
+                <button class="btn-del" onclick="this.parentElement.remove()">✕</button>
+            `;
             container.prepend(note);
             inp.value = '';
         }
 
+        function toggleNote(btn) {
+            btn.parentElement.classList.toggle('done');
+        }
+
+        // --- БРОНЯ (ПРЕВЬЮ И КОМАНДЫ) ---
         function openArmorModal() { document.getElementById('armorModal').style.display = 'flex'; processArmorTool('#3C44AA'); }
         function closeArmorModal() { document.getElementById('armorModal').style.display = 'none'; }
 
         function processArmorTool(hexColor) {
+            // Окрашиваем SVG иконки
             document.querySelectorAll('.armor-svg').forEach(svg => svg.style.fill = hexColor);
+            
+            // Расчет Minecraft цвета (Decimal)
             const intColor = parseInt(hexColor.replace('#', ''), 16);
+            document.getElementById('colorNameLabel').innerText = hexColor.toUpperCase();
+            
             let cmdsHtml = '';
             ['helmet', 'chestplate', 'leggings', 'boots'].forEach(part => {
                 cmdsHtml += `<div style="margin-bottom:5px;">/give @s leather_${part}{display:{color:${intColor}}}</div>`;
